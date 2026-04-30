@@ -1,0 +1,1897 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Terminal.ViewModels"
+        xmlns:m="clr-namespace:Terminal.Models"
+        xmlns:svc="clr-namespace:Terminal.Services"
+        xmlns:conv="clr-namespace:Terminal.Converters"
+        x:Class="Terminal.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="J Mart — Checkout Terminal"
+        Width="1100" Height="720"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="Manual"
+        Position="0,0"
+        Icon="avares://Terminal/Assets/icon.png"
+        Background="{DynamicResource AppBg}"
+        Topmost="False">
+
+  <Window.Resources>
+    <conv:BoolToColorConverter x:Key="BoolToColor"/>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#2563EB"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="10"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#1D4ED8"/>
+    </Style>
+    <Style Selector="Button.success">
+      <Setter Property="Background" Value="#16A34A"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="10"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.success:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#15803D"/>
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#DC2626"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#B91C1C"/>
+    </Style>
+    <Style Selector="Button.ghost">
+      <Setter Property="Background" Value="{DynamicResource ItemBg}"/>
+      <Setter Property="Foreground" Value="{DynamicResource TextSub}"/>
+      <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource StrongBorder}"/>
+    </Style>
+    <Style Selector="Button.payment-method">
+      <Setter Property="Background" Value="{DynamicResource CardBg}"/>
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource StrongBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.payment-method:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource ItemBg}"/>
+    </Style>
+
+    <!-- Pattern dot styles -->
+    <Style Selector="Button.pattern-dot">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="CornerRadius" Value="40"/>
+    </Style>
+    <Style Selector="Button.pattern-dot:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- NFC ripple rings -->
+    <Style Selector="Ellipse.nfc-ring-a">
+      <Style.Animations>
+        <Animation Duration="0:0:2.2" IterationCount="INFINITE" Easing="SineEaseOut">
+          <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.7"/></KeyFrame>
+          <KeyFrame Cue="60%"><Setter Property="Opacity" Value="0.0"/></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.7"/></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="Ellipse.nfc-ring-b">
+      <Style.Animations>
+        <Animation Duration="0:0:2.2" IterationCount="INFINITE" Easing="SineEaseOut" Delay="0:0:0.4">
+          <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.5"/></KeyFrame>
+          <KeyFrame Cue="60%"><Setter Property="Opacity" Value="0.0"/></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.5"/></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="Ellipse.nfc-ring-c">
+      <Style.Animations>
+        <Animation Duration="0:0:2.2" IterationCount="INFINITE" Easing="SineEaseOut" Delay="0:0:0.8">
+          <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.3"/></KeyFrame>
+          <KeyFrame Cue="60%"><Setter Property="Opacity" Value="0.0"/></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.3"/></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="Border.card-reader-pulse">
+      <Style.Animations>
+        <Animation Duration="0:0:1.8" IterationCount="INFINITE" Easing="SineEaseInOut">
+          <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.45"/></KeyFrame>
+          <KeyFrame Cue="50%"><Setter Property="Opacity" Value="1.0"/></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.45"/></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="Ellipse.ring-pulse">
+      <Style.Animations>
+        <Animation Duration="0:0:1.8" IterationCount="INFINITE" Easing="SineEaseInOut">
+          <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.15"/></KeyFrame>
+          <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.45"/></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.15"/></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="56,*,72">
+
+    <!-- ── Top bar ─────────────────────────────────────────────────────────── -->
+    <Border Grid.Row="0" Background="{DynamicResource PanelBg}" BorderBrush="{DynamicResource SubtleBorder}" BorderThickness="0,0,0,1" Padding="20,0"
+            PointerPressed="OnTopBarPointerPressed">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <Border Background="#2563EB" CornerRadius="8" Width="32" Height="32">
+            <TextBlock Text="J" FontWeight="Black" FontSize="16" Foreground="#FFFFFF"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <TextBlock Text="J Mart" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding ScannerOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Scanner" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding PaymentOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Cash" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding PrinterOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Printer" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding CardReaderOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Card Reader" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding ScaleOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Scale" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <Ellipse Width="8" Height="8" Fill="{Binding ServerOk, Converter={StaticResource BoolToColor}}"/>
+            <TextBlock Text="Server" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <Button Background="{DynamicResource ItemBg}" Foreground="{DynamicResource TextMuted}" CornerRadius="8"
+                  Height="34" Padding="14,0" FontSize="12"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  IsVisible="{Binding ShowIdleScreen, Converter={x:Static BoolConverters.Not}}"
+                  Command="{Binding RequestCancelSessionCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <TextBlock Text="⌂" FontSize="15" VerticalAlignment="Center"/>
+              <TextBlock Text="Home" FontSize="12" VerticalAlignment="Center"/>
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- ── Main content ────────────────────────────────────────────────────── -->
+    <Grid Grid.Row="1" ColumnDefinitions="*,400">
+
+      <!-- Left: Scanned items -->
+      <Border Background="{DynamicResource PanelBg}" Margin="16,16,8,16" CornerRadius="16">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+          <TextBlock Grid.Row="0" Text="Scanned Items" FontSize="14" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextBright}" Margin="0,0,0,12"/>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Cart}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Background="{DynamicResource ItemBg}" CornerRadius="10" Margin="0,0,0,6" Padding="14,10">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Medium" Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="{Binding Barcode}" FontSize="11" Foreground="{DynamicResource TextFaint}" Margin="0,2,0,0"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                  Spacing="6" Margin="16,0">
+                        <TextBlock Text="{Binding Subtotal, StringFormat='${0:F2}'}"
+                                   FontSize="15" FontWeight="Bold" Foreground="#60A5FA"
+                                   HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                          <Button Width="26" Height="26" CornerRadius="6" Padding="0"
+                                  Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextSub}"
+                                  FontSize="16" FontWeight="Bold"
+                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                  Content="−"
+                                  Command="{Binding $parent[Window].DataContext.DecreaseQuantityCommand}"
+                                  CommandParameter="{Binding}"/>
+                          <TextBlock Text="{Binding Quantity}" FontSize="13" FontWeight="SemiBold"
+                                     Foreground="{DynamicResource TextPrimary}"
+                                     Width="24" TextAlignment="Center" VerticalAlignment="Center"/>
+                          <Button Width="26" Height="26" CornerRadius="6" Padding="0"
+                                  Background="#2563EB" Foreground="White"
+                                  FontSize="16" FontWeight="Bold"
+                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                  Content="+"
+                                  Command="{Binding $parent[Window].DataContext.IncreaseQuantityCommand}"
+                                  CommandParameter="{Binding}"/>
+                        </StackPanel>
+                      </StackPanel>
+                      <Button Grid.Column="2" Classes="danger" Width="32" Height="32" FontSize="13"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                              Content="✕" Command="{Binding $parent[Window].DataContext.RemoveItemCommand}"
+                              CommandParameter="{Binding}"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+          <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+            <TextBox Grid.Column="0" Text="{Binding BarcodeInput}" Watermark="Manual barcode entry..."
+                     Background="{DynamicResource ItemBg}" Foreground="{DynamicResource TextPrimary}" CornerRadius="8" Padding="12,10"
+                     BorderBrush="{DynamicResource MidBorder}" FontSize="13" Margin="0,0,8,0"/>
+            <Button Grid.Column="1" Classes="primary" Width="80" Height="40" Content="Add"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding ScanBarcodeCommand}"/>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <!-- Right: Order summary -->
+      <Border Grid.Column="1" Background="{DynamicResource PanelBg}" Margin="8,16,16,16" CornerRadius="16">
+        <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="20">
+          <StackPanel Grid.Row="0" Margin="0,0,0,16" Spacing="4">
+            <TextBlock Text="Order Summary" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextBright}"/>
+            <TextBlock Text="{Binding ItemCount, StringFormat='{}{0} item(s)'}"
+                       FontSize="12" Foreground="{DynamicResource TextFaint}"/>
+          </StackPanel>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Cart}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="12" Foreground="{DynamicResource TextSub}"
+                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Subtotal, StringFormat='${0:F2}'}"
+                               FontSize="12" Foreground="{DynamicResource TextPrimary}" FontWeight="Medium"/>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+          <!-- Only show when points have actually been redeemed -->
+          <Border Grid.Row="2" Background="#14532D" CornerRadius="8" Padding="12,8"
+                  Margin="0,8,0,0" IsVisible="{Binding BonusApplied}">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="🎁 Points redeemed"
+                         FontSize="12" Foreground="#4ADE80" VerticalAlignment="Center"/>
+              <TextBlock Grid.Column="1" Text="{Binding LoyaltyDiscount, StringFormat='-${0:F2}'}"
+                         FontSize="13" FontWeight="Bold" Foreground="#4ADE80"/>
+            </Grid>
+          </Border>
+          <Border Grid.Row="3" Background="{DynamicResource ItemBg}" CornerRadius="10" Padding="14,12" Margin="0,8,0,12">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="TOTAL" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+              <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat='${0:F2}'}"
+                         FontSize="28" FontWeight="Bold" Foreground="#60A5FA"/>
+            </Grid>
+          </Border>
+          <StackPanel Grid.Row="3" Margin="0,64,0,0" Spacing="8">
+            <Button Classes="primary" Height="56" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="Proceed to Payment  →" FontSize="16" FontWeight="SemiBold"
+                    Command="{Binding ProceedToPaymentCommand}"/>
+            <Button Classes="danger" Height="36" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="Clear Cart" FontSize="12"
+                    Command="{Binding RequestClearCartCommand}"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <!-- ── Bottom status bar ─────────────────────────────────────────────── -->
+    <Border Grid.Row="2" Background="{DynamicResource PanelBg}" BorderBrush="{DynamicResource SubtleBorder}" BorderThickness="0,1,0,0" Padding="24,0">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Text="{Binding StatusMessage}" FontSize="13" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextGhost}" VerticalAlignment="Center">
+          <TextBlock.Text>
+            <MultiBinding StringFormat="Terminal #{0}">
+              <Binding Source="{x:Static svc:Config.TerminalId}"/>
+            </MultiBinding>
+          </TextBlock.Text>
+        </TextBlock>
+      </Grid>
+    </Border>
+
+    <!-- ══ IDLE SCREEN ════════════════════════════════════════════════════════ -->
+    <Grid Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding ShowIdleScreen}" Background="{DynamicResource ScreenBg}"
+          Tapped="OnIdleScreenTapped">
+      <Ellipse Width="700" Height="700" HorizontalAlignment="Left" VerticalAlignment="Top"
+               Margin="-300,-300,0,0" Opacity="0.35">
+        <Ellipse.Fill>
+          <RadialGradientBrush>
+            <GradientStop Color="#1E1065" Offset="0"/>
+            <GradientStop Color="#00000000" Offset="1"/>
+          </RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+      <Ellipse Width="500" Height="500" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+               Margin="0,0,-200,-200" Opacity="0.3">
+        <Ellipse.Fill>
+          <RadialGradientBrush>
+            <GradientStop Color="#0D2B55" Offset="0"/>
+            <GradientStop Color="#00000000" Offset="1"/>
+          </RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="36" IsHitTestVisible="False">
+        <Border Width="108" Height="108" CornerRadius="28" Background="#2563EB" HorizontalAlignment="Center">
+          <TextBlock Text="J" FontSize="64" FontWeight="Black" Foreground="#FFFFFF"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <StackPanel Spacing="8" HorizontalAlignment="Center">
+          <TextBlock Text="J MART" FontSize="48" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                     HorizontalAlignment="Center" LetterSpacing="6"/>
+          <TextBlock Text="Checkout Terminal" FontSize="17" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock Text="Tap anywhere or insert your reward card to begin"
+                   FontSize="14" Foreground="#374151" HorizontalAlignment="Center" TextAlignment="Center"/>
+      </StackPanel>
+
+      <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+            ColumnDefinitions="Auto,*,Auto" Margin="24,0,24,20">
+        <TextBlock Grid.Column="0" FontSize="11" Foreground="#1F2937" VerticalAlignment="Center">
+          <TextBlock.Text>
+            <MultiBinding StringFormat="Terminal #{0}">
+              <Binding Source="{x:Static svc:Config.TerminalId}"/>
+            </MultiBinding>
+          </TextBlock.Text>
+        </TextBlock>
+        <Button x:Name="IdleSettingsButton"
+                Grid.Column="2" Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextFaint}"
+                Width="40" Height="40" CornerRadius="10" Padding="0"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Content="⚙" FontSize="18" ToolTip.Tip="Settings"
+                Command="{Binding OpenSettingsCommand}"/>
+      </Grid>
+    </Grid>
+
+    <!-- ══ LOYALTY CARD SCREEN ═══════════════════════════════════════════════ -->
+    <Grid Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding ShowLoyaltyScreen}" Background="{DynamicResource ScreenBg}">
+
+      <!-- Back button — top right -->
+      <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+              Margin="0,20,20,0"
+              Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextMuted}"
+              CornerRadius="12" Padding="18,10" FontSize="14"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+              Content="↩  Back"
+              Command="{Binding CancelSessionCommand}"/>
+
+      <!-- STATE A: Waiting for card reader -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  MaxWidth="540" Spacing="0" Margin="40,0"
+                  IsVisible="{Binding LoyaltyManualMode, Converter={x:Static BoolConverters.Not}}">
+        <Grid HorizontalAlignment="Center" Margin="0,0,0,36">
+          <Ellipse Classes="ring-pulse" Width="180" Height="180" Fill="#2563EB" HorizontalAlignment="Center"/>
+          <Ellipse Classes="ring-pulse" Width="136" Height="136" Fill="#1D4ED8" HorizontalAlignment="Center" Opacity="0.5"/>
+          <Border Classes="card-reader-pulse" Background="#1E3A5F" CornerRadius="20"
+                  Width="96" Height="96" HorizontalAlignment="Center">
+            <TextBlock Text="💳" FontSize="52" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </Grid>
+        <TextBlock Text="Tap, swipe, or insert your card"
+                   FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                   HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
+        <TextBlock FontSize="15" Foreground="{DynamicResource TextFaint}"
+                   HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                   Text="Place your reward card near the reader to earn and redeem points."
+                   Margin="0,0,0,40"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10"
+                    IsVisible="{Binding IsProcessing}" Margin="0,0,0,32">
+          <Border Background="#1E3A5F" CornerRadius="20" Padding="20,10">
+            <TextBlock Text="Looking up card…" Foreground="#60A5FA" FontSize="14" HorizontalAlignment="Center"/>
+          </Border>
+        </StackPanel>
+        <StackPanel Spacing="12" HorizontalAlignment="Stretch">
+          <Button Height="52" HorizontalAlignment="Stretch"
+                  Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextMuted}" CornerRadius="12" FontSize="14"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="⌨  Enter phone number instead"
+                  Command="{Binding SwitchToManualInputCommand}"/>
+          <Button Height="52" HorizontalAlignment="Stretch"
+                  Background="Transparent" Foreground="{DynamicResource TextGhost}" CornerRadius="12" FontSize="13"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="Skip — Continue Without Card"
+                  Command="{Binding SkipLoyaltyCommand}"/>
+        </StackPanel>
+      </StackPanel>
+
+      <!-- STATE B: Manual phone entry -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  MaxWidth="520" Spacing="24" Margin="40,0"
+                  IsVisible="{Binding LoyaltyManualMode}">
+        <StackPanel HorizontalAlignment="Center" Spacing="6">
+          <TextBlock Text="Enter your phone number" FontSize="30" FontWeight="Bold"
+                     Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+          <TextBlock FontSize="14" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"
+                     TextAlignment="Center"
+                     Text="Or type your reward card ID to look up your account."/>
+        </StackPanel>
+        <Border Background="{DynamicResource CardBg}" CornerRadius="18" Padding="28,24">
+          <StackPanel Spacing="14">
+            <TextBlock Text="PHONE NUMBER OR CARD ID" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextGhost}" LetterSpacing="1"/>
+            <TextBox Text="{Binding LoyaltyInput}" Watermark="Phone number or 13-digit card number"
+                     Background="{DynamicResource InputBg}" Foreground="{DynamicResource TextPrimary}" CornerRadius="10" Padding="16,14"
+                     BorderBrush="{DynamicResource StrongBorder}" FontSize="18" TextAlignment="Center"/>
+            <TextBlock Text="{Binding LoyaltyInputError}" FontSize="12" Foreground="#EF4444"
+                       HorizontalAlignment="Center"
+                       IsVisible="{Binding LoyaltyInputError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+            <Button Height="58" HorizontalAlignment="Stretch"
+                    Background="#2563EB" Foreground="#FFFFFF" CornerRadius="12"
+                    FontSize="16" FontWeight="SemiBold"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="✓  Look Up Account"
+                    Command="{Binding SubmitLoyaltyCommand}"/>
+          </StackPanel>
+        </Border>
+        <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+          <Button Height="46" HorizontalAlignment="Stretch"
+                  Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextFaint}" CornerRadius="12" FontSize="13"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="← Back to card reader"
+                  Command="{Binding SwitchToCardReaderCommand}"/>
+          <Button Height="46" HorizontalAlignment="Stretch"
+                  Background="Transparent" Foreground="{DynamicResource TextGhost}" CornerRadius="12" FontSize="13"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="Skip — Continue Without Card"
+                  Command="{Binding SkipLoyaltyCommand}"/>
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+
+    <!-- ══ PAYMENT SELECT SCREEN ══════════════════════════════════════════════ -->
+    <Grid Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding ShowPaymentSelectScreen}" Background="{DynamicResource ScreenBg}">
+      <Grid MaxWidth="580" HorizontalAlignment="Center" VerticalAlignment="Center"
+            RowDefinitions="Auto,Auto,Auto,Auto" Margin="40,0">
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Spacing="12" Margin="0,0,0,28">
+          <TextBlock Text="How would you like to pay?" FontSize="30" FontWeight="Bold"
+                     Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+          <Border Background="{DynamicResource ModalBg}" CornerRadius="14" Padding="32,12" HorizontalAlignment="Center">
+            <TextBlock Text="{Binding Total, StringFormat='${0:F2}'}"
+                       FontSize="44" FontWeight="Bold" Foreground="#60A5FA" HorizontalAlignment="Center"/>
+          </Border>
+          <Border Background="#14532D" CornerRadius="8" Padding="14,6"
+                  HorizontalAlignment="Center" IsVisible="{Binding LoyaltyApplied}">
+            <TextBlock Text="{Binding LoyaltyName, StringFormat='🎁 Earning reward points for {0}'}"
+                       FontSize="13" Foreground="#22C55E" FontWeight="Medium"/>
+          </Border>
+        </StackPanel>
+
+        <!-- Points redemption card -->
+        <Panel Grid.Row="1" Margin="0,0,0,14" IsVisible="{Binding LoyaltyApplied}">
+
+          <!-- State 1: Not enough points (< 1000) — locked -->
+          <Border CornerRadius="14" Background="#1A1008" BorderBrush="#78350F" BorderThickness="1"
+                  Padding="20,0" Height="64"
+                  IsVisible="{Binding CanRedeemPoints, Converter={x:Static BoolConverters.Not}}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <TextBlock Grid.Column="0" Text="🔒" FontSize="22" VerticalAlignment="Center" Margin="0,0,14,0"/>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                <TextBlock Text="Points redemption locked" FontSize="14" FontWeight="SemiBold" Foreground="#D97706"/>
+                <TextBlock Text="{Binding CurrentMember.Points, StringFormat='You have {0:N0} pts — need 1,000 pts to unlock'}"
+                           FontSize="11" Foreground="#92400E"/>
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <!-- State 2: Enough points, not yet applied -->
+          <Button HorizontalAlignment="Stretch" Height="64" CornerRadius="14"
+                  Background="#0A1628" BorderBrush="#1D4ED8" BorderThickness="1"
+                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Padding="20,0"
+                  IsVisible="{Binding CanRedeemPoints}"
+                  Command="{Binding OpenBonusOverlayCommand}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <TextBlock Grid.Column="0" Text="🎁" FontSize="26" VerticalAlignment="Center" Margin="0,0,14,0"/>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                <TextBlock Text="Use your loyalty points" FontSize="14" FontWeight="SemiBold" Foreground="#60A5FA"/>
+                <TextBlock Text="{Binding CurrentMember.Points, StringFormat='{}{0:N0} pts available — tap to apply'}"
+                           FontSize="11" Foreground="{DynamicResource TextFaint}"
+                           IsVisible="{Binding BonusApplied, Converter={x:Static BoolConverters.Not}}"/>
+                <TextBlock Text="{Binding BonusSavingPreview, StringFormat='Points applied: −${0:F2}'}"
+                           FontSize="11" FontWeight="SemiBold" Foreground="#4ADE80"
+                           IsVisible="{Binding BonusApplied}"/>
+              </StackPanel>
+              <TextBlock Grid.Column="2"
+                         Text="{Binding BonusApplied, Converter={x:Static BoolConverters.Not}, StringFormat={}}"
+                         VerticalAlignment="Center">
+                <TextBlock.Text>
+                  <Binding Path="BonusApplied">
+                    <Binding.Converter>
+                      <conv:BoolToStringConverter TrueValue="✎" FalseValue="›"/>
+                    </Binding.Converter>
+                  </Binding>
+                </TextBlock.Text>
+              </TextBlock>
+            </Grid>
+          </Button>
+        </Panel>
+
+        <Grid Grid.Row="2">
+          <!-- Normal payment methods (hidden when points cover full total) -->
+          <StackPanel Spacing="10"
+                      IsVisible="{Binding PointsOnlyMode, Converter={x:Static BoolConverters.Not}}">
+            <Button Classes="payment-method" Height="90" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Padding="20,0"
+                    Command="{Binding PayCommand}" CommandParameter="card">
+              <Grid ColumnDefinitions="60,*,32">
+                <TextBlock Grid.Column="0" Text="💳" FontSize="38" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3" Margin="8,0,0,0">
+                  <TextBlock Text="Credit / Debit Card" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                  <TextBlock Text="Tap, insert, or swipe" FontSize="12" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="›" FontSize="26" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </Button>
+            <Button Classes="payment-method" Height="90" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Padding="20,0"
+                    Command="{Binding PayCommand}" CommandParameter="cash">
+              <Grid ColumnDefinitions="60,*,32">
+                <TextBlock Grid.Column="0" Text="💵" FontSize="38" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3" Margin="8,0,0,0">
+                  <TextBlock Text="Cash" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                  <TextBlock Text="Pay with banknotes or coins" FontSize="12" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="›" FontSize="26" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </Button>
+            <Button Classes="payment-method" Height="90" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Padding="20,0"
+                    Command="{Binding PayCommand}" CommandParameter="mobile">
+              <Grid ColumnDefinitions="60,*,32">
+                <TextBlock Grid.Column="0" Text="📱" FontSize="38" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3" Margin="8,0,0,0">
+                  <TextBlock Text="Mobile Pay" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                  <TextBlock Text="Samsung Pay · Apple Pay · Kakao Pay" FontSize="12" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="›" FontSize="26" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </Button>
+          </StackPanel>
+
+          <!-- Points-only mode: payment methods blocked -->
+          <Border IsVisible="{Binding PointsOnlyMode}"
+                  Background="#0B1F13" BorderBrush="#166534" BorderThickness="1"
+                  CornerRadius="16" Padding="24,22">
+            <StackPanel Spacing="10" HorizontalAlignment="Center">
+              <TextBlock Text="✓ Points cover the full total" FontSize="16" FontWeight="Bold"
+                         Foreground="#4ADE80" HorizontalAlignment="Center"/>
+              <TextBlock Text="Other payment methods are disabled. Tap the points row above to adjust the amount if you'd like to pay the remainder another way."
+                         FontSize="12" Foreground="#22C55E"
+                         HorizontalAlignment="Center" TextAlignment="Center"
+                         TextWrapping="Wrap" MaxWidth="380"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+        <Button Grid.Row="3" Height="50" HorizontalAlignment="Stretch" Margin="0,14,0,0"
+                Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextFaint}" CornerRadius="12" FontSize="14"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Content="←  Back to Cart"
+                Command="{Binding CancelPaymentSelectCommand}"/>
+      </Grid>
+    </Grid>
+
+
+    <!-- ══ POPUP: LOYALTY MEMBER FOUND ════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowLoyaltyConfirmOverlay}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="460"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="Is this you?" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+          <Border Background="#1A2E1A" BorderBrush="#22C55E" BorderThickness="1.5" CornerRadius="14" Padding="22,18">
+            <StackPanel Spacing="14">
+              <!-- Name + tier row -->
+              <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0" Text="{Binding CurrentMember.Name}"
+                           FontSize="22" FontWeight="Bold" Foreground="White"
+                           VerticalAlignment="Center"/>
+                <Border Grid.Column="1" Background="#166534" CornerRadius="20" Padding="12,5"
+                        VerticalAlignment="Center">
+                  <TextBlock Text="{Binding CurrentMember.TierLabel}"
+                             FontSize="12" Foreground="#86EFAC" FontWeight="Bold"/>
+                </Border>
+              </Grid>
+              <!-- Divider -->
+              <Border Height="1" Background="#22C55E" Opacity="0.2"/>
+              <!-- Points row -->
+              <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                <TextBlock Text="🌟" FontSize="18" VerticalAlignment="Center"/>
+                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#4ADE80" VerticalAlignment="Center">
+                  <TextBlock.Text>
+                    <Binding Path="CurrentMember.Points" StringFormat="{}{0:N0} pts"/>
+                  </TextBlock.Text>
+                </TextBlock>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="success" Height="50" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="15" Content="✓  Yes, that's me"
+                    Command="{Binding ConfirmLoyaltyMemberCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="50" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Not me"
+                    Command="{Binding DenyLoyaltyMemberCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: LOYALTY NOT FOUND ═══════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowLoyaltyNotFoundOverlay}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="420"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="⚠" FontSize="40" HorizontalAlignment="Center" Foreground="#F59E0B"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Card not registered" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding LoyaltyNotFoundName, StringFormat='&quot;{0}&quot; was not found in our rewards program.'}"
+                       FontSize="13" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="320"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="ghost" Height="48" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="← Try Again" Command="{Binding CloseLoyaltyNotFoundCommand}"/>
+            <Button Grid.Column="2" Classes="primary" Height="48" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="Skip →" Command="{Binding SkipLoyaltyCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: CARD READER ERROR ═══════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowLoyaltyErrorOverlay}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="420"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="🔴" FontSize="40" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Card Reader Error" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="The reward card reader is not responding. Please enter your phone number manually or skip."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="320"/>
+          </StackPanel>
+          <Button Classes="ghost" Height="48" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="OK — Enter Manually" Command="{Binding CloseLoyaltyErrorCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: BONUS POINTS REDEMPTION ═════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowBonusRedeemOverlay}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="480"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="6" HorizontalAlignment="Center">
+            <TextBlock Text="🎉" FontSize="40" HorizontalAlignment="Center"/>
+            <TextBlock Text="How many points to use?" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding CurrentMember.Points, StringFormat='You have {0:N0} pts  ·  100 pts = $1.00'}"
+                       FontSize="12" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"/>
+          </StackPanel>
+          <Border Background="#0A1628" BorderBrush="#1D4ED8" BorderThickness="1" CornerRadius="14" Padding="24,20">
+            <StackPanel Spacing="14">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="POINTS TO REDEEM" FontSize="10" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFaint}" LetterSpacing="1" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right" Spacing="1">
+                  <TextBlock Text="{Binding CurrentMember.Points, StringFormat='{}{0:N0} pts balance'}"
+                             FontSize="10" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Right"/>
+                  <TextBlock Text="{Binding MaxRedeemableForOrder, StringFormat='max {0:N0} for this order'}"
+                             FontSize="10" Foreground="#60A5FA" HorizontalAlignment="Right"/>
+                  <TextBlock Text="program cap: 1,000,000 pts"
+                             FontSize="10" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Right"/>
+                </StackPanel>
+              </Grid>
+              <TextBox Text="{Binding BonusPointsInput}"
+                       Background="{DynamicResource InputBg}" Foreground="{DynamicResource TextPrimary}"
+                       CornerRadius="10" Padding="16,16" BorderBrush="{DynamicResource StrongBorder}"
+                       FontSize="28" FontWeight="Bold" TextAlignment="Center"/>
+              <TextBlock Text="100 pts = $1.00" FontSize="11" Foreground="{DynamicResource TextGhost}"
+                         HorizontalAlignment="Center"/>
+              <Border Background="#0B1F13" CornerRadius="10" Padding="16,10"
+                      IsVisible="{Binding BonusInputValid}">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="{Binding BonusPointsToUse, StringFormat='{}{0:N0} pts'}"
+                             FontSize="14" Foreground="#60A5FA" VerticalAlignment="Center"/>
+                  <TextBlock Grid.Column="1"
+                             Text="{Binding BonusSavingPreview, StringFormat='− ${0:F2}'}"
+                             FontSize="18" FontWeight="Bold" Foreground="#4ADE80"/>
+                </Grid>
+              </Border>
+            </StackPanel>
+          </Border>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="success" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="15" FontWeight="SemiBold"
+                    Content="{Binding BonusApplyLabel}"
+                    IsEnabled="{Binding BonusInputValid}"
+                    Command="{Binding UseBonusCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Skip" Command="{Binding SkipBonusCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: PAY BY POINTS ONLY ═════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowPointsOnlyAlert}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="460"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="🎁" FontSize="48" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Pay entirely with points?" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Your loyalty points cover the full total. Complete this purchase using your points only?"
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       TextWrapping="Wrap" MaxWidth="340"/>
+          </StackPanel>
+          <Border Background="#0B1F13" CornerRadius="12" Padding="20,14" HorizontalAlignment="Center">
+            <StackPanel Spacing="4" HorizontalAlignment="Center">
+              <TextBlock Text="{Binding BonusSavingPreview, StringFormat='−${0:F2} redeemed'}"
+                         FontSize="22" FontWeight="Bold" Foreground="#4ADE80" HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding BonusPointsToUse, StringFormat='{}{0:N0} points used'}"
+                         FontSize="12" Foreground="#22C55E" HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="success" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="15" FontWeight="SemiBold"
+                    Content="✓  Yes, pay by points"
+                    Command="{Binding ConfirmPointsOnlyCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="No, adjust"
+                    Command="{Binding DismissPointsOnlyCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: EMPTY CART ══════════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowEmptyCartPopup}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="380"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="16">
+          <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Cart is Empty" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Please scan at least one item before proceeding to payment."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="280"/>
+          </StackPanel>
+          <Button Classes="primary" Height="48" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="OK" Command="{Binding CloseEmptyCartPopupCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: CLEAR CART CONFIRM ══════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowClearCartConfirm}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="380"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Clear Cart?" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="All scanned items will be removed. This cannot be undone."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="280"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="danger" Height="48" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="Yes, Clear" Command="{Binding ClearCartCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="48" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Content="Cancel" Command="{Binding DismissClearCartConfirmCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: CANCEL SESSION CONFIRM ══════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowCancelSessionConfirm}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="400"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="End This Session?" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="The cart will be cleared and you'll return to the welcome screen."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="danger" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="↩  Return to Idle" Command="{Binding CancelSessionCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Continue" Command="{Binding DismissCancelSessionConfirmCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: RESTART TERMINAL CONFIRM ════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowRestartConfirm}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="400"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="🔄" FontSize="40" HorizontalAlignment="Center"/>
+            <TextBlock Text="Restart Terminal?" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="The current session will be lost and the terminal will relaunch."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="danger" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Yes, Restart" Command="{Binding RestartTerminalCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Cancel" Command="{Binding DismissRestartConfirmCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: CLOSE TERMINAL CONFIRM ═════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowCloseTerminalConfirm}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="400"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="⛔" FontSize="40" HorizontalAlignment="Center"/>
+            <TextBlock Text="Close Terminal?" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="This will shut down the terminal completely. Any active session will be lost."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="danger" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Yes, Close" Command="{Binding CloseTerminalCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Cancel" Command="{Binding DismissCloseTerminalConfirmCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ SETTINGS OVERLAY (staff card unlock) ════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#E0000000"
+            IsVisible="{Binding ShowSettingsOverlay}">
+      <Border Background="{DynamicResource ItemBg}" CornerRadius="20" Padding="36,32"
+              Width="560" MaxHeight="660"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0">
+              <TextBlock Text="⚙  Settings" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+              <TextBlock Text="Terminal settings &amp; management" FontSize="12" Foreground="{DynamicResource TextFaint}"/>
+            </StackPanel>
+            <Button Grid.Column="1" Classes="ghost" Content="✕" Width="32" Height="32" Padding="0"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding CloseSettingsCommand}"/>
+          </Grid>
+
+          <!-- Locked: tap staff card or enter PIN -->
+          <StackPanel Spacing="16" IsVisible="{Binding SettingsUnlocked, Converter={x:Static BoolConverters.Not}}">
+
+            <!-- Card scan prompt (shown when PIN input is hidden) -->
+            <StackPanel Spacing="12" IsVisible="{Binding ShowSettingsPinInput, Converter={x:Static BoolConverters.Not}}">
+              <Grid HorizontalAlignment="Center">
+                <Ellipse Classes="ring-pulse" Width="90" Height="90" Fill="#2563EB" HorizontalAlignment="Center"/>
+                <Border Classes="card-reader-pulse" Background="#1E3A5F" CornerRadius="14"
+                        Width="60" Height="60" HorizontalAlignment="Center">
+                  <TextBlock Text="💳" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+              </Grid>
+              <TextBlock Text="Tap staff card to unlock" FontSize="15" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+              <TextBlock Text="Ask a staff member to scan their card on the reader."
+                         FontSize="12" Foreground="{DynamicResource TextMuted}"
+                         HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+              <Button Classes="ghost" Content="Use PIN instead"
+                      FontSize="12" HorizontalAlignment="Center"
+                      Command="{Binding ShowPinInputCommand}"/>
+            </StackPanel>
+
+            <!-- PIN input (shown after "Use PIN instead" is pressed) -->
+            <StackPanel Spacing="14" IsVisible="{Binding ShowSettingsPinInput}">
+              <TextBlock Text="Enter Staff PIN" FontSize="15" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+
+              <!-- ── Cooldown banner ── -->
+              <Border Background="#7C1010" CornerRadius="10" Padding="18,14"
+                      HorizontalAlignment="Center"
+                      IsVisible="{Binding ShowPinCooldown}">
+                <StackPanel Spacing="6" HorizontalAlignment="Center">
+                  <TextBlock Text="🔒 Too many wrong attempts" FontSize="14" FontWeight="SemiBold"
+                             Foreground="#FCA5A5" HorizontalAlignment="Center"/>
+                  <TextBlock FontSize="22" FontWeight="Bold" Foreground="White"
+                             HorizontalAlignment="Center">
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="Try again in {0}s">
+                        <Binding Path="PinCooldownSecs"/>
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
+                </StackPanel>
+              </Border>
+
+              <!-- ── Call-staff banner ── -->
+              <Border Background="#451A03" CornerRadius="10" Padding="18,16"
+                      HorizontalAlignment="Center"
+                      IsVisible="{Binding ShowPinCallStaff}">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                  <TextBlock Text="🚫 PIN locked" FontSize="15" FontWeight="Bold"
+                             Foreground="#FCD34D" HorizontalAlignment="Center"/>
+                  <TextBlock Text="Please call a staff member." FontSize="13"
+                             Foreground="#FDE68A" HorizontalAlignment="Center"/>
+                  <TextBlock Text="Tap staff card to reset." FontSize="12"
+                             Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"/>
+                </StackPanel>
+              </Border>
+
+              <!-- Normal PIN entry (hidden during cooldown / call-staff) -->
+              <StackPanel Spacing="10">
+                <StackPanel.IsVisible>
+                  <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="ShowPinCooldown" Converter="{x:Static BoolConverters.Not}"/>
+                    <Binding Path="ShowPinCallStaff" Converter="{x:Static BoolConverters.Not}"/>
+                  </MultiBinding>
+                </StackPanel.IsVisible>
+                <!-- PIN dots display -->
+                <TextBlock Text="{Binding SettingsPinDisplay}" FontSize="22" LetterSpacing="2"
+                           Foreground="#60A5FA" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SettingsPinError}" FontSize="12" Foreground="#EF4444"
+                           HorizontalAlignment="Center" Height="18"/>
+                <!-- Numpad -->
+                <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto"
+                      Width="220" HorizontalAlignment="Center">
+                  <Button Grid.Row="0" Grid.Column="0" Content="1" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="1"/>
+                  <Button Grid.Row="0" Grid.Column="2" Content="2" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="2"/>
+                  <Button Grid.Row="0" Grid.Column="4" Content="3" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="3"/>
+                  <Button Grid.Row="2" Grid.Column="0" Content="4" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="4"/>
+                  <Button Grid.Row="2" Grid.Column="2" Content="5" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="5"/>
+                  <Button Grid.Row="2" Grid.Column="4" Content="6" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="6"/>
+                  <Button Grid.Row="4" Grid.Column="0" Content="7" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="7"/>
+                  <Button Grid.Row="4" Grid.Column="2" Content="8" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="8"/>
+                  <Button Grid.Row="4" Grid.Column="4" Content="9" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="9"/>
+                  <Button Grid.Row="6" Grid.Column="0" Content="⌫" Classes="ghost" Height="48" FontSize="18" HorizontalContentAlignment="Center" Command="{Binding ClearSettingsPinCommand}"/>
+                  <Button Grid.Row="6" Grid.Column="2" Content="0" Classes="ghost" Height="48" FontSize="18" FontWeight="SemiBold" HorizontalContentAlignment="Center" Command="{Binding AppendSettingsPinCommand}" CommandParameter="0"/>
+                  <Button Grid.Row="6" Grid.Column="4" Content="✓" Classes="primary" Height="48" FontSize="18" HorizontalContentAlignment="Center" Command="{Binding SubmitSettingsPinCommand}"/>
+                </Grid>
+              </StackPanel>
+            </StackPanel>
+
+          </StackPanel>
+
+          <!-- Unlocked: settings controls -->
+          <StackPanel Spacing="16" IsVisible="{Binding SettingsUnlocked}">
+            <Border Background="#0B1F13" CornerRadius="8" Padding="12,8" HorizontalAlignment="Center">
+              <TextBlock Text="✓ Staff authenticated" FontSize="12" Foreground="#4ADE80" FontWeight="Medium"/>
+            </Border>
+
+            <!-- Dark mode / Restart -->
+            <Border Background="{DynamicResource PanelBg}" CornerRadius="10" Padding="16,12">
+              <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="Dark Mode" FontSize="14" Foreground="{DynamicResource TextPrimary}" FontWeight="Medium"/>
+                  <TextBlock Text="Toggle display theme" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsDarkMode}" OnContent="" OffContent="" VerticalAlignment="Center"/>
+              </Grid>
+            </Border>
+            <Border Background="{DynamicResource PanelBg}" CornerRadius="10" Padding="16,12">
+              <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="Restart Terminal" FontSize="14" Foreground="{DynamicResource TextPrimary}" FontWeight="Medium"/>
+                  <TextBlock Text="Closes and relaunches this terminal" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Classes="danger" Content="Restart" Width="72" Height="34"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding RequestRestartTerminalCommand}"/>
+              </Grid>
+            </Border>
+            <Border Background="{DynamicResource PanelBg}" CornerRadius="10" Padding="16,12">
+              <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="Close Terminal" FontSize="14" Foreground="#EF4444" FontWeight="Medium"/>
+                  <TextBlock Text="Shuts down this terminal completely" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Classes="danger" Content="Close" Width="72" Height="34"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding RequestCloseTerminalCommand}"/>
+              </Grid>
+            </Border>
+
+            <!-- ── Transaction History ── -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="Transaction History" FontSize="14" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextPrimary}"/>
+              <TextBlock Text="Tap a transaction to view and reprint the receipt."
+                         FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+
+              <!-- Empty state -->
+              <Border Background="{DynamicResource PanelBg}" CornerRadius="8" Padding="16,12"
+                      IsVisible="{Binding ReceiptHistory.Count, Converter={x:Static BoolConverters.Not}}">
+                <TextBlock Text="No transactions this session yet." FontSize="12"
+                           Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"/>
+              </Border>
+
+              <!-- History list -->
+              <Border Background="{DynamicResource PanelBg}" CornerRadius="10" Padding="4"
+                      IsVisible="{Binding ReceiptHistory.Count}">
+                <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                  <ItemsControl ItemsSource="{Binding ReceiptHistory}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="m:ReceiptHistoryEntry">
+                        <Button Background="Transparent" Padding="12,8" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Command="{Binding $parent[Window].DataContext.ViewHistoryEntryCommand}"
+                                CommandParameter="{Binding}">
+                          <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0">
+                              <TextBlock Text="{Binding Label}" FontSize="12"
+                                         Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="›" FontSize="16"
+                                       Foreground="{DynamicResource TextFaint}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                          </Grid>
+                        </Button>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+              </Border>
+            </StackPanel>
+
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ HISTORY DETAIL OVERLAY ═══════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#E0000000"
+            IsVisible="{Binding ShowHistoryDetail}">
+      <Border Background="{DynamicResource ItemBg}" CornerRadius="20" Padding="32,28"
+              Width="480" MaxHeight="620"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="16">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0">
+              <TextBlock Text="🧾  Receipt" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+              <TextBlock Text="{Binding SelectedHistory.Label}" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+            </StackPanel>
+            <Button Grid.Column="1" Classes="ghost" Content="✕" Width="32" Height="32" Padding="0"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding CloseHistoryDetailCommand}"/>
+          </Grid>
+
+          <Border Background="{DynamicResource PanelBg}" CornerRadius="10" Padding="16">
+            <ScrollViewer MaxHeight="340" VerticalScrollBarVisibility="Auto">
+              <TextBlock Text="{Binding SelectedHistory.ReceiptText}"
+                         FontFamily="Courier New, monospace" FontSize="12"
+                         Foreground="{DynamicResource TextSub}" TextWrapping="Wrap"/>
+            </ScrollViewer>
+          </Border>
+
+          <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+            <Button Classes="primary" Content="🖨  Reprint" Width="140" Height="44"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding ReprintReceiptCommand}"
+                    CommandParameter="{Binding SelectedHistory}"/>
+            <Button Classes="ghost" Content="Back" Width="100" Height="44"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding CloseHistoryDetailCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ PAYMENT SCREEN ════════════════════════════════════════════════════ -->
+    <Grid Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding ShowPaymentOverlay}" Background="{DynamicResource ScreenBg}">
+
+      <!-- CARD PAYMENT -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  MaxWidth="540" Spacing="0" Margin="40,0"
+                  IsVisible="{Binding IsCardPayment}">
+        <Grid HorizontalAlignment="Center" Margin="0,0,0,36">
+          <Ellipse Classes="ring-pulse" Width="180" Height="180" Fill="#1D4ED8" HorizontalAlignment="Center"/>
+          <Ellipse Classes="ring-pulse" Width="130" Height="130" Fill="#2563EB" HorizontalAlignment="Center" Opacity="0.6"/>
+          <Border Classes="card-reader-pulse" Background="#1E3A5F" CornerRadius="20"
+                  Width="96" Height="96" HorizontalAlignment="Center">
+            <TextBlock Text="💳" FontSize="52" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </Grid>
+        <TextBlock Text="Tap, insert, or swipe your card"
+                   FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                   HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
+        <TextBlock FontSize="15" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   Text="Hold contactless card near the reader, insert chip-side first, or swipe."
+                   Margin="0,0,0,40"/>
+        <Border Background="#1E3A5F" CornerRadius="16" Padding="24,12"
+                HorizontalAlignment="Center" Margin="0,0,0,32" IsVisible="{Binding IsProcessing}">
+          <TextBlock Text="Processing..." Foreground="#60A5FA" FontSize="15" FontWeight="SemiBold"/>
+        </Border>
+        <Button Height="52" HorizontalAlignment="Stretch"
+                Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextFaint}" CornerRadius="12" FontSize="13"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Content="↩  Back"
+                IsVisible="{Binding IsProcessing, Converter={x:Static BoolConverters.Not}}"
+                Command="{Binding CancelPaymentCommand}"/>
+      </StackPanel>
+
+      <!-- MOBILE PAY -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  MaxWidth="540" Spacing="0" Margin="40,0"
+                  IsVisible="{Binding IsMobilePayment}">
+        <Grid HorizontalAlignment="Center" Margin="0,0,0,36">
+          <Ellipse Classes="nfc-ring-c" Width="200" Height="200" Fill="#7C3AED" HorizontalAlignment="Center"/>
+          <Ellipse Classes="nfc-ring-b" Width="148" Height="148" Fill="#6D28D9" HorizontalAlignment="Center"/>
+          <Ellipse Classes="nfc-ring-a" Width="100" Height="100" Fill="#5B21B6" HorizontalAlignment="Center"/>
+          <Border Classes="card-reader-pulse" Background="#2E1065" CornerRadius="20"
+                  Width="88" Height="88" HorizontalAlignment="Center">
+            <TextBlock Text="📱" FontSize="46" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </Grid>
+        <TextBlock Text="Hold your phone near the reader"
+                   FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                   HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
+        <TextBlock FontSize="15" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   Text="Apple Pay, Google Pay, Samsung Pay, and NFC-enabled cards are all supported."
+                   Margin="0,0,0,40"/>
+        <Border Background="#2E1065" CornerRadius="16" Padding="24,12"
+                HorizontalAlignment="Center" Margin="0,0,0,32" IsVisible="{Binding IsProcessing}">
+          <TextBlock Text="Processing..." Foreground="#A78BFA" FontSize="15" FontWeight="SemiBold"/>
+        </Border>
+        <Button Height="52" HorizontalAlignment="Stretch"
+                Background="{DynamicResource PanelBg}" Foreground="{DynamicResource TextFaint}" CornerRadius="12" FontSize="13"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Content="↩  Back"
+                IsVisible="{Binding IsProcessing, Converter={x:Static BoolConverters.Not}}"
+                Command="{Binding CancelPaymentCommand}"/>
+      </StackPanel>
+
+      <!-- CASH PAYMENT -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  MaxWidth="560" Spacing="0" Margin="40,0"
+                  IsVisible="{Binding IsCashPayment}">
+        <Border Classes="card-reader-pulse" Background="#14532D" CornerRadius="20"
+                Width="96" Height="96" HorizontalAlignment="Center" Margin="0,0,0,32">
+          <TextBlock Text="💵" FontSize="52" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+
+        <!-- Back button -->
+        <Button HorizontalAlignment="Right" Margin="0,0,0,16"
+                Background="Transparent" Foreground="{DynamicResource TextMuted}"
+                BorderThickness="0" FontSize="13" Padding="8,6"
+                Content="↩ Back"
+                Command="{Binding CancelPaymentCommand}"
+                IsVisible="{Binding CashComplete, Converter={x:Static BoolConverters.Not}}"/>
+
+        <!-- Waiting for cash -->
+        <StackPanel IsVisible="{Binding CashComplete, Converter={x:Static BoolConverters.Not}}" Spacing="0">
+          <TextBlock Text="Insert cash into the machine"
+                     FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                     HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
+          <TextBlock FontSize="15" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"
+                     TextAlignment="Center"
+                     Text="Feed bills or coins into the reader. Change will be calculated automatically."
+                     Margin="0,0,0,36"/>
+          <Border Background="{DynamicResource CardBg}" CornerRadius="18" Padding="32,24"
+                  HorizontalAlignment="Stretch" Margin="0,0,0,20">
+            <Grid ColumnDefinitions="*,*">
+              <StackPanel Grid.Column="0" Spacing="6" HorizontalAlignment="Center">
+                <TextBlock Text="AMOUNT DUE" FontSize="11" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" LetterSpacing="1"/>
+                <TextBlock Text="{Binding Total, StringFormat='${0:F2}'}"
+                           FontSize="36" FontWeight="Bold" Foreground="{DynamicResource TextBright}" HorizontalAlignment="Center"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="6" HorizontalAlignment="Center">
+                <TextBlock Text="INSERTED" FontSize="11" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" LetterSpacing="1"/>
+                <TextBlock Text="{Binding CashInserted, StringFormat='${0:F2}'}"
+                           FontSize="36" FontWeight="Bold" Foreground="#34D399" HorizontalAlignment="Center"/>
+              </StackPanel>
+            </Grid>
+          </Border>
+        </StackPanel>
+
+        <!-- Cash sufficient — show change -->
+        <StackPanel IsVisible="{Binding CashComplete}" Spacing="0">
+          <TextBlock Text="Payment received!"
+                     FontSize="32" FontWeight="Bold" Foreground="#22C55E"
+                     HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
+          <TextBlock FontSize="15" Foreground="{DynamicResource TextFaint}" HorizontalAlignment="Center"
+                     TextAlignment="Center"
+                     Text="Return the change to the customer, then tap Complete."
+                     Margin="0,0,0,32"/>
+          <Border Background="#14532D" CornerRadius="18" Padding="32,28"
+                  HorizontalAlignment="Stretch" Margin="0,0,0,28">
+            <Grid ColumnDefinitions="*,*,*">
+              <StackPanel Grid.Column="0" Spacing="6" HorizontalAlignment="Center">
+                <TextBlock Text="TOTAL DUE" FontSize="11" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" LetterSpacing="1"/>
+                <TextBlock Text="{Binding Total, StringFormat='${0:F2}'}"
+                           FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="6" HorizontalAlignment="Center">
+                <TextBlock Text="CASH RECEIVED" FontSize="11" Foreground="{DynamicResource TextGhost}" HorizontalAlignment="Center" LetterSpacing="1"/>
+                <TextBlock Text="{Binding CashInserted, StringFormat='${0:F2}'}"
+                           FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextSub}" HorizontalAlignment="Center"/>
+              </StackPanel>
+              <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Center">
+                <TextBlock Text="CHANGE DUE" FontSize="11" Foreground="#16A34A" HorizontalAlignment="Center"
+                           LetterSpacing="1" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding CashChange, StringFormat='${0:F2}'}"
+                           FontSize="36" FontWeight="Bold" Foreground="#22C55E" HorizontalAlignment="Center"/>
+              </StackPanel>
+            </Grid>
+          </Border>
+          <Button Height="64" HorizontalAlignment="Stretch"
+                  Background="#16A34A" Foreground="#FFFFFF" CornerRadius="14"
+                  FontSize="18" FontWeight="Bold"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="Complete Transaction"
+                  Command="{Binding CompleteCashCommand}"/>
+        </StackPanel>
+      </StackPanel>
+
+    </Grid>
+
+
+    <!-- ── Receipt overlay ───────────────────────────────────────────────── -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#E0000000"
+            IsVisible="{Binding ShowReceiptOverlay}">
+      <Border Background="{DynamicResource ItemBg}" CornerRadius="20" Padding="36,32"
+              Width="440"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <StackPanel Spacing="6" HorizontalAlignment="Center">
+            <TextBlock Text="✓" FontSize="48" Foreground="#22C55E" HorizontalAlignment="Center"/>
+            <TextBlock Text="Payment Successful" FontSize="24" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Thank you for shopping at J Mart!"
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center"/>
+          </StackPanel>
+
+          <!-- Points earned — only shown for loyalty members -->
+          <Border Background="#0B1F13" CornerRadius="12" Padding="16,12"
+                  IsVisible="{Binding LoyaltyApplied}">
+            <StackPanel Spacing="4" HorizontalAlignment="Center">
+              <TextBlock FontSize="13" Foreground="#4ADE80" FontWeight="SemiBold"
+                         HorizontalAlignment="Center" TextAlignment="Center"
+                         Text="{Binding PointsEarned, StringFormat='🌟 +{0} reward points added to your account!'}"/>
+              <TextBlock FontSize="11" Foreground="{DynamicResource TextFaint}"
+                         HorizontalAlignment="Center" TextAlignment="Center"
+                         Text="{Binding UpdatedMemberPoints, StringFormat='New balance: {0:N0} pts'}"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Receipt printed confirmation (shown briefly before auto-navigate) -->
+          <Border Background="{DynamicResource PanelBg}" CornerRadius="12" Padding="16"
+                  IsVisible="{Binding ReceiptPrinted}">
+            <TextBlock Text="{Binding PrinterStatusNote}" FontSize="13"
+                       Foreground="#4ADE80"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+          </Border>
+
+          <!-- Choice buttons -->
+          <StackPanel Spacing="10" IsVisible="{Binding ReceiptPrinted, Converter={x:Static BoolConverters.Not}}">
+            <Button Classes="primary" Content="🖨  Print Receipt" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="15" FontWeight="SemiBold"
+                    Command="{Binding PrintReceiptCommand}"/>
+            <Button Classes="ghost" Content="No thanks" Height="46" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14"
+                    Command="{Binding DismissReceiptCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: PRINTER ERROR ══════════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowPrinterErrorAlert}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="440"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="🖨" FontSize="48" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Printer Error" FontSize="22" FontWeight="Bold"
+                       Foreground="#EF4444" HorizontalAlignment="Center"/>
+            <TextBlock Text="The receipt could not be printed. The printer may be out of paper, jammed, or offline."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       TextWrapping="Wrap" MaxWidth="320"/>
+          </StackPanel>
+          <Border Background="#1A0A00" BorderBrush="#92400E" BorderThickness="1"
+                  CornerRadius="10" Padding="16,12">
+            <StackPanel Spacing="4" HorizontalAlignment="Center">
+              <TextBlock Text="👮 Please call a staff member."
+                         FontSize="14" FontWeight="Bold" Foreground="#FCD34D"
+                         HorizontalAlignment="Center" TextAlignment="Center"/>
+              <TextBlock Text="A staff member will fix the printer and print your receipt."
+                         FontSize="12" Foreground="#D97706"
+                         HorizontalAlignment="Center" TextAlignment="Center"
+                         TextWrapping="Wrap" MaxWidth="300"/>
+            </StackPanel>
+          </Border>
+          <Button Classes="danger" Content="OK — Skip Receipt" Height="50" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  FontSize="14" FontWeight="SemiBold"
+                  Command="{Binding DismissPrinterErrorCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ PATTERN LOCK OVERLAY ═════════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowPatternLockOverlay}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="24" Padding="36,32" Width="420"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="24">
+
+          <!-- Header — changes per phase -->
+          <!-- verify -->
+          <StackPanel Spacing="6" HorizontalAlignment="Center"
+                      IsVisible="{Binding PatternPhaseVerify}">
+            <TextBlock Text="🔐" FontSize="36" HorizontalAlignment="Center"/>
+            <TextBlock Text="Draw your pattern" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Connect at least 4 dots in order."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"/>
+          </StackPanel>
+          <!-- await_staff -->
+          <StackPanel Spacing="10" HorizontalAlignment="Center"
+                      IsVisible="{Binding PatternPhaseAwaitStaff}">
+            <TextBlock Text="🔑" FontSize="36" HorizontalAlignment="Center"/>
+            <TextBlock Text="Forgot your pattern?" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <Border Background="#1E3A5F" CornerRadius="10" Padding="18,12">
+              <TextBlock Text="Please ask a staff member to tap their card to authorize a reset."
+                         FontSize="13" Foreground="#93C5FD"
+                         HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+            </Border>
+          </StackPanel>
+          <!-- new_pattern -->
+          <StackPanel Spacing="6" HorizontalAlignment="Center"
+                      IsVisible="{Binding PatternPhaseNew}">
+            <TextBlock Text="✏️" FontSize="36" HorizontalAlignment="Center"/>
+            <TextBlock Text="Draw your new pattern" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Connect at least 4 dots."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center"/>
+          </StackPanel>
+          <!-- confirm_pattern -->
+          <StackPanel Spacing="6" HorizontalAlignment="Center"
+                      IsVisible="{Binding PatternPhaseConfirm}">
+            <TextBlock Text="✅" FontSize="36" HorizontalAlignment="Center"/>
+            <TextBlock Text="Draw it again to confirm" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Must match what you just drew."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center"/>
+          </StackPanel>
+
+          <!-- 3×3 draw grid — hidden while waiting for staff authorization -->
+          <Grid Width="288" Height="288" HorizontalAlignment="Center"
+                IsVisible="{Binding PatternPhaseAwaitStaff, Converter={x:Static BoolConverters.Not}}">
+
+            <!-- Layer 1: lines drawn by code-behind (not hit-testable) -->
+            <Canvas x:Name="PatternLineCanvas" IsHitTestVisible="False" ZIndex="0"/>
+
+            <!-- Layer 2: dot visuals bound to VM (not hit-testable) -->
+            <ItemsControl ItemsSource="{Binding PatternNodes}"
+                          IsHitTestVisible="False" ZIndex="1">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Rows="3" Columns="3" Width="288" Height="288"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="m:PatternNode">
+                  <Panel Width="96" Height="96">
+                    <!-- Unselected -->
+                    <Ellipse Width="58" Height="58" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Fill="{DynamicResource CardBg}" Stroke="{DynamicResource StrongBorder}" StrokeThickness="2"
+                             IsVisible="{Binding IsSelected, Converter={x:Static BoolConverters.Not}}"/>
+                    <Ellipse Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Fill="{DynamicResource TextGhost}"
+                             IsVisible="{Binding IsSelected, Converter={x:Static BoolConverters.Not}}"/>
+                    <!-- Selected -->
+                    <Ellipse Width="58" Height="58" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Fill="#1D4ED8" Opacity="0.25" IsVisible="{Binding IsSelected}"/>
+                    <Ellipse Width="58" Height="58" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Stroke="#3B82F6" StrokeThickness="2.5" Fill="Transparent"
+                             IsVisible="{Binding IsSelected}"/>
+                    <Ellipse Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Fill="#2563EB" IsVisible="{Binding IsSelected}"/>
+                    <TextBlock Text="{Binding Order}" FontSize="11" FontWeight="Bold" Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               IsVisible="{Binding IsSelected}"/>
+                  </Panel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Layer 3: transparent pointer capture (on top) -->
+            <Canvas Background="Transparent" ZIndex="2"
+                    PointerPressed="PatternCanvas_PointerPressed"
+                    PointerMoved="PatternCanvas_PointerMoved"
+                    PointerReleased="PatternCanvas_PointerReleased"/>
+          </Grid>
+          <!-- ─────────────────────────────────────────────────────────── -->
+
+          <!-- ── Cooldown banner ── -->
+          <Border Background="#7C1010" CornerRadius="10" Padding="18,14"
+                  HorizontalAlignment="Center"
+                  IsVisible="{Binding ShowPatternCooldown}">
+            <StackPanel Spacing="6" HorizontalAlignment="Center">
+              <TextBlock Text="🔒 Too many wrong attempts" FontSize="14" FontWeight="SemiBold"
+                         Foreground="#FCA5A5" HorizontalAlignment="Center"/>
+              <TextBlock FontSize="22" FontWeight="Bold" Foreground="White"
+                         HorizontalAlignment="Center">
+                <TextBlock.Text>
+                  <MultiBinding StringFormat="Try again in {0}s">
+                    <Binding Path="PatternCooldownSecs"/>
+                  </MultiBinding>
+                </TextBlock.Text>
+              </TextBlock>
+            </StackPanel>
+          </Border>
+
+          <!-- ── Call-staff banner ── -->
+          <Border Background="#451A03" CornerRadius="10" Padding="18,16"
+                  HorizontalAlignment="Center"
+                  IsVisible="{Binding ShowPatternCallStaff}">
+            <StackPanel Spacing="8" HorizontalAlignment="Center">
+              <TextBlock Text="🚫 Pattern locked" FontSize="15" FontWeight="Bold"
+                         Foreground="#FCD34D" HorizontalAlignment="Center"/>
+              <TextBlock Text="Please call a staff member." FontSize="13"
+                         Foreground="#FDE68A" HorizontalAlignment="Center"/>
+              <TextBlock Text="Tap staff card to reset." FontSize="12"
+                         Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Error / status -->
+          <TextBlock Text="{Binding PatternLockError}" FontSize="13" Foreground="#EF4444"
+                     HorizontalAlignment="Center" Height="20"/>
+          <!-- Verifying spinner (verify phase) -->
+          <Border Background="#1E3A5F" CornerRadius="10" Padding="16,10"
+                  HorizontalAlignment="Center">
+            <Border.IsVisible>
+              <MultiBinding Converter="{x:Static BoolConverters.And}">
+                <Binding Path="IsProcessing"/>
+                <Binding Path="PatternPhaseVerify"/>
+              </MultiBinding>
+            </Border.IsVisible>
+            <TextBlock Text="Verifying…" Foreground="#60A5FA" FontSize="13"/>
+          </Border>
+          <!-- Saving spinner (confirm phase) -->
+          <Border Background="#14532D" CornerRadius="10" Padding="16,10"
+                  HorizontalAlignment="Center">
+            <Border.IsVisible>
+              <MultiBinding Converter="{x:Static BoolConverters.And}">
+                <Binding Path="IsProcessing"/>
+                <Binding Path="PatternPhaseConfirm"/>
+              </MultiBinding>
+            </Border.IsVisible>
+            <TextBlock Text="Saving new pattern…" Foreground="#4ADE80" FontSize="13"/>
+          </Border>
+
+          <!-- "Forgot pattern?" link — only in verify phase, not during lockout -->
+          <Button Height="36" HorizontalAlignment="Center"
+                  Background="Transparent" Foreground="#60A5FA" CornerRadius="8"
+                  FontSize="12" HorizontalContentAlignment="Center"
+                  Content="Forgot pattern?"
+                  Command="{Binding ForgotPatternCommand}"
+                  IsVisible="{Binding PatternPhaseVerify}"/>
+
+          <!-- Cancel -->
+          <Button Height="40" HorizontalAlignment="Stretch"
+                  Background="Transparent" Foreground="{DynamicResource TextGhost}" CornerRadius="8"
+                  FontSize="13" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  Content="Cancel" Command="{Binding CancelPatternCommand}"/>
+
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ WEIGHT CHECK PROMPT (bagging area) ════════════════════════════════════ -->
+    <Border Grid.Row="2" HorizontalAlignment="Stretch"
+            IsVisible="{Binding ShowWeightCheckPrompt}"
+            Background="#0A1628" BorderBrush="#1D4ED8" BorderThickness="0,1,0,0">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Spacing="14" Margin="0,10">
+        <TextBlock Text="🏋" FontSize="22" VerticalAlignment="Center"/>
+        <StackPanel Spacing="2" VerticalAlignment="Center">
+          <TextBlock Text="{Binding WeightCheckItemName, StringFormat='Place {0} in the bagging area'}"
+                     FontSize="14" FontWeight="SemiBold" Foreground="#60A5FA"/>
+          <TextBlock Text="Waiting for scale reading…" FontSize="11" Foreground="{DynamicResource TextFaint}"/>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- ══ POPUP: SCALE PLACEMENT (shows immediately on 0 reading) ══════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#D9000000"
+            IsVisible="{Binding ShowScalePlacementPrompt}"
+            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+      <Border Background="#1C1917" CornerRadius="20" Padding="40,36"
+              Width="460" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="22" HorizontalAlignment="Center">
+          <TextBlock Text="⚖" FontSize="52" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Place item on the bagging scale" FontSize="22" FontWeight="Bold"
+                       Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding WeightCheckItemName, StringFormat='Put &quot;{0}&quot; in the bagging area to continue.'}"
+                       FontSize="14" Foreground="#9CA3AF"
+                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="340"/>
+          </StackPanel>
+          <!-- Blocked notice -->
+          <Border Background="#1A0F00" BorderBrush="#92400E" BorderThickness="1" CornerRadius="8" Padding="16,10">
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+              <TextBlock Text="🔒" FontSize="14" VerticalAlignment="Center"/>
+              <TextBlock FontSize="12" Foreground="#FCD34D" VerticalAlignment="Center"
+                         Text="Scanning is blocked until item is on scale"/>
+            </StackPanel>
+          </Border>
+          <!-- Animated waiting dots -->
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Border Width="8" Height="8" CornerRadius="4" Background="#60A5FA">
+              <Border.Styles>
+                <Style Selector="Border">
+                  <Style.Animations>
+                    <Animation Duration="0:0:1.4" IterationCount="INFINITE" Easing="SineEaseInOut">
+                      <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                      <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.2"/></KeyFrame>
+                      <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                    </Animation>
+                  </Style.Animations>
+                </Style>
+              </Border.Styles>
+            </Border>
+            <TextBlock Text="Waiting for scale…" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center"/>
+          </StackPanel>
+          <!-- Staff override hint -->
+          <Border Background="#0D1F2B" BorderBrush="#1E3A5F" BorderThickness="1" CornerRadius="8" Padding="16,10">
+            <TextBlock FontSize="12" Foreground="#60A5FA" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="340"
+                       Text="👮 Staff: scan your card to approve and skip the weight check."/>
+          </Border>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: SCALE WENT OFFLINE WITH ITEMS IN CART ═══════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#D9000000"
+            IsVisible="{Binding ShowScaleOfflineAlert}"
+            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+      <Border Background="#1C1917" CornerRadius="20" Padding="40,36"
+              Width="460" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="22" HorizontalAlignment="Center">
+          <TextBlock Text="⚠" FontSize="52" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Scale went offline" FontSize="22" FontWeight="Bold"
+                       Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock FontSize="14" Foreground="#9CA3AF" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="340"
+                       Text="The bagging scale disconnected while items were present. Weight verification is no longer possible."/>
+          </StackPanel>
+          <Border Background="#1A0F00" BorderBrush="#92400E" BorderThickness="1" CornerRadius="8" Padding="16,10">
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+              <TextBlock Text="🔒" FontSize="14" VerticalAlignment="Center"/>
+              <TextBlock FontSize="12" Foreground="#FCD34D" VerticalAlignment="Center"
+                         Text="Payment and quantity changes are blocked"/>
+            </StackPanel>
+          </Border>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Border Width="8" Height="8" CornerRadius="4" Background="#F87171">
+              <Border.Styles>
+                <Style Selector="Border">
+                  <Style.Animations>
+                    <Animation Duration="0:0:1.2" IterationCount="INFINITE" Easing="SineEaseInOut">
+                      <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                      <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.2"/></KeyFrame>
+                      <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                    </Animation>
+                  </Style.Animations>
+                </Style>
+              </Border.Styles>
+            </Border>
+            <TextBlock Text="Waiting for staff or scale to come back online…" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center"/>
+          </StackPanel>
+          <Border Background="#0D1F2B" BorderBrush="#1E3A5F" BorderThickness="1" CornerRadius="8" Padding="16,10">
+            <TextBlock FontSize="12" Foreground="#60A5FA" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="340"
+                       Text="👮 Staff: scan your card to acknowledge and resume the session."/>
+          </Border>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: WEIGHT MISMATCH ═════════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowWeightMismatchAlert}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="460"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="⚠" FontSize="48" HorizontalAlignment="Center" Foreground="#EF4444"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Weight Mismatch" FontSize="22" FontWeight="Bold"
+                       Foreground="#EF4444" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding WeightMismatchInfo}"
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       TextWrapping="Wrap" MaxWidth="360"/>
+          </StackPanel>
+          <Border Background="#450A0A" BorderBrush="#7F1D1D" BorderThickness="1"
+                  CornerRadius="10" Padding="16,10">
+            <TextBlock Text="⚠  Cashier: please inspect this item before allowing the transaction to continue."
+                       FontSize="12" Foreground="#FCA5A5"
+                       HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+          </Border>
+          <Button Classes="danger" Content="OK — Remove Item" Height="50" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  FontSize="14" FontWeight="SemiBold"
+                  Command="{Binding DismissWeightMismatchCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ POPUP: QUANTITY CHANGED WHILE SCALE ERROR ════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowQuantityChangeAlert}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="36,32" Width="460"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="⚠" FontSize="48" HorizontalAlignment="Center" Foreground="#F59E0B"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Scale Offline — Quantity Changed" FontSize="20" FontWeight="Bold"
+                       Foreground="#F59E0B" HorizontalAlignment="Center" TextAlignment="Center"/>
+            <TextBlock Text="The scale is currently offline. You changed the quantity of an item without weight verification. Please call a staff member before scanning the next item."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       TextWrapping="Wrap" MaxWidth="360"/>
+          </StackPanel>
+          <Border Background="#2D1F05" BorderBrush="#92400E" BorderThickness="1"
+                  CornerRadius="10" Padding="16,10">
+            <TextBlock Text="Your next scan has been blocked. A staff member must verify the items."
+                       FontSize="12" Foreground="#FCD34D"
+                       HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+          </Border>
+          <Button Classes="danger" Content="OK — I Understand" Height="50" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  FontSize="14" FontWeight="SemiBold"
+                  Command="{Binding DismissQuantityChangeAlertCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ SERVER DOWN BANNER ═══════════════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CC000000"
+            IsVisible="{Binding ShowServerDownBanner}"
+            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+      <Border Background="#1C1917" CornerRadius="20" Padding="40,36"
+              Width="480" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20" HorizontalAlignment="Center">
+          <TextBlock Text="📡" FontSize="48" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Store Server Offline" FontSize="22" FontWeight="Bold"
+                       Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="We lost connection to the store server. Your session is paused. Waiting to reconnect automatically…"
+                       FontSize="13" Foreground="#9CA3AF"
+                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="340"/>
+          </StackPanel>
+
+          <!-- Time since offline -->
+          <Border Background="#292524" CornerRadius="8" Padding="16,10" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="🕐" FontSize="14" VerticalAlignment="Center"/>
+              <TextBlock FontSize="13" Foreground="#D6D3D1" VerticalAlignment="Center">
+                <TextBlock.Text>
+                  <MultiBinding StringFormat="Offline since {0}">
+                    <Binding Path="ServerDownSinceText"/>
+                  </MultiBinding>
+                </TextBlock.Text>
+              </TextBlock>
+            </StackPanel>
+          </Border>
+
+          <!-- Reconnecting indicator -->
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Border Width="8" Height="8" CornerRadius="4" Background="#EF4444">
+              <Border.Styles>
+                <Style Selector="Border">
+                  <Style.Animations>
+                    <Animation Duration="0:0:1.2" IterationCount="INFINITE" Easing="SineEaseInOut">
+                      <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                      <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.2"/></KeyFrame>
+                      <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1"/></KeyFrame>
+                    </Animation>
+                  </Style.Animations>
+                </Style>
+              </Border.Styles>
+            </Border>
+            <TextBlock Text="Reconnecting…" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center"/>
+          </StackPanel>
+
+          <!-- Go home button -->
+          <Button Classes="danger" Height="44" Width="220"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  FontSize="14" Content="↩ Go Back to Home"
+                  Command="{Binding RequestGoHomeFromOfflineCommand}"/>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ GO HOME FROM OFFLINE — CONFIRM POPUP ══════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#E0000000"
+            IsVisible="{Binding ShowGoHomeFromOfflineConfirm}"
+            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+      <Border Background="#1C1917" CornerRadius="20" Padding="36,32"
+              Width="440" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <TextBlock Text="⚠️" FontSize="44" HorizontalAlignment="Center"/>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Go back to home screen?" FontSize="20" FontWeight="Bold"
+                       Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock FontSize="13" Foreground="#9CA3AF"
+                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="340"
+                       Text="All scanned items and your loyalty session will be lost. This cannot be undone."/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+            <Button Classes="ghost" Height="44" Width="160"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Cancel"
+                    Command="{Binding DismissGoHomeFromOfflineCommand}"/>
+            <Button Classes="danger" Height="44" Width="180"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Yes, go home"
+                    Command="{Binding ConfirmGoHomeFromOfflineCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ══ INACTIVITY TIMEOUT WARNING ══════════════════════════════════════════ -->
+    <Border Grid.Row="0" Grid.RowSpan="3" Background="#D0000000"
+            IsVisible="{Binding ShowTimeoutWarning}">
+      <Border Background="{DynamicResource ModalBg}" CornerRadius="20" Padding="40,36"
+              Width="420" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="20">
+          <Grid HorizontalAlignment="Center" Width="96" Height="96">
+            <Ellipse Width="96" Height="96" Stroke="#DC2626" StrokeThickness="4"
+                     Fill="{DynamicResource CardBg}"/>
+            <TextBlock Text="{Binding TimeoutCountdown}"
+                       FontSize="36" FontWeight="Bold" Foreground="#EF4444"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Grid>
+          <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="Still there?" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+            <TextBlock Text="The session will return to the home screen due to inactivity."
+                       FontSize="13" Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                       TextAlignment="Center" MaxWidth="320"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <Button Grid.Column="0" Classes="primary" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="15" FontWeight="SemiBold" Content="Continue Session"
+                    Command="{Binding ContinueSessionCommand}"/>
+            <Button Grid.Column="2" Classes="ghost" Height="52" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    FontSize="14" Content="Go Home" Command="{Binding CancelSessionCommand}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- ── Drawer Maintenance Overlay ───────────────────────────────────────── -->
+    <Border Grid.Row="0" Grid.RowSpan="3" ZIndex="500"
+            IsVisible="{Binding ShowDrawerMaintenanceOverlay}"
+            Background="#F0000000">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="24" MaxWidth="480">
+        <TextBlock Text="🔧" FontSize="64" HorizontalAlignment="Center"/>
+        <TextBlock Text="DRAWER MAINTENANCE REQUIRED"
+                   FontSize="22" FontWeight="Bold" Foreground="White"
+                   HorizontalAlignment="Center" TextAlignment="Center"/>
+        <TextBlock Text="The cash drawer is full and cannot accept more bills or coins."
+                   FontSize="15" Foreground="#9CA3AF"
+                   HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+        <Border Background="#1F2937" CornerRadius="12" Padding="20,14">
+          <StackPanel Spacing="6">
+            <TextBlock Text="FULL SLOTS" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold" LetterSpacing="1"/>
+            <TextBlock Text="{Binding DrawerMaintenanceSlots}"
+                       FontSize="16" Foreground="#FCA5A5" FontWeight="SemiBold"
+                       HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+          </StackPanel>
+        </Border>
+        <TextBlock Text="Please wait while a staff member empties the drawer."
+                   FontSize="13" Foreground="#6B7280"
+                   HorizontalAlignment="Center" TextAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+          <Ellipse Width="8" Height="8" Fill="#2563EB">
+            <Ellipse.Styles>
+              <Style Selector="Ellipse">
+                <Style.Animations>
+                  <Animation Duration="0:0:1.2" IterationCount="INFINITE" Easing="SineEaseInOut">
+                    <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1.0"/></KeyFrame>
+                    <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.2"/></KeyFrame>
+                    <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1.0"/></KeyFrame>
+                  </Animation>
+                </Style.Animations>
+              </Style>
+            </Ellipse.Styles>
+          </Ellipse>
+          <TextBlock Text="Checking every 5 seconds…" FontSize="12" Foreground="#4B5563" VerticalAlignment="Center"/>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</Window>

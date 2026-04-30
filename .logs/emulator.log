@@ -1,0 +1,2 @@
+/Users/jangminho/development/checkout/emulator/Emulator/Emulator.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/emulator/Emulator/Emulator.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9

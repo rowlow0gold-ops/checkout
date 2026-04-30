@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: ./web/backend
+    container_name: checkout-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - checkout-net
+
+  redis:
+    image: redis:alpine
+    container_name: checkout-redis
+    restart: unless-stopped
+    networks:
+      - checkout-net
+
+networks:
+  checkout-net:
+    driver: bridge

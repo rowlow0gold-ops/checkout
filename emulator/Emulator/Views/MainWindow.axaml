@@ -1,0 +1,701 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Emulator.ViewModels"
+        xmlns:m="clr-namespace:Emulator.Models"
+        xmlns:conv="clr-namespace:Emulator.Converters"
+        x:Class="Emulator.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Checkout Emulator / Bug Injector"
+        Width="660" Height="820"
+        WindowStartupLocation="Manual"
+        Position="1110,0"
+        Icon="avares://Emulator/Assets/icon.png"
+        Background="#0D1117">
+
+  <Window.Resources>
+    <conv:BoolToColorConverter x:Key="BoolToColor"/>
+    <conv:InvertBoolConverter  x:Key="InvertBool"/>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#2563EB"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#1D4ED8"/>
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#DC2626"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.success">
+      <Setter Property="Background" Value="#16A34A"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.ghost">
+      <Setter Property="Background" Value="#1F2937"/>
+      <Setter Property="Foreground" Value="#D1D5DB"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.terminal-toggle">
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Width" Value="90"/>
+    </Style>
+    <Style Selector="TextBlock.label">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Foreground" Value="#6B7280"/>
+      <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="#161B22"/>
+      <Setter Property="CornerRadius" Value="10"/>
+      <Setter Property="Padding" Value="16"/>
+      <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto,*,180" Margin="16">
+
+    <!-- ── Terminal connections ───────────────────────────────────────────── -->
+    <Border Grid.Row="0" Classes="card" Margin="0,0,0,10">
+      <StackPanel Spacing="10">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10">
+            <Border Background="#F59E0B" CornerRadius="6" Width="28" Height="28">
+              <TextBlock Text="E" FontWeight="Bold" Foreground="#0D1117"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Checkout Emulator" FontSize="15" FontWeight="Bold"
+                       Foreground="White" VerticalAlignment="Center"/>
+            <TextBlock Text="— broadcasts to all connected terminals"
+                       FontSize="11" Foreground="#6B7280" VerticalAlignment="Center"/>
+          </StackPanel>
+          <!-- Server connection status -->
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <Ellipse Width="8" Height="8"
+                     Fill="{Binding ServerConnected, Converter={StaticResource BoolToColor}}"
+                     VerticalAlignment="Center"/>
+            <StackPanel VerticalAlignment="Center">
+              <TextBlock Text="Store Server" FontSize="12" Foreground="White" FontWeight="Medium"/>
+              <TextBlock Text="{Binding ServerStatusText}" FontSize="10" Foreground="#6B7280"/>
+            </StackPanel>
+          </StackPanel>
+        </Grid>
+
+        <ItemsControl ItemsSource="{Binding Terminals}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="m:TerminalEntry">
+              <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto" Margin="0,6,0,0">
+                <Ellipse Grid.Column="0" Width="8" Height="8" Margin="0,0,10,0"
+                         Fill="{Binding IsConnected, Converter={StaticResource BoolToColor}}"
+                         VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding Label}" FontSize="13" Foreground="White" FontWeight="Medium"/>
+                  <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="#6B7280"/>
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="{Binding Port, StringFormat=':{0}'}"
+                           FontSize="11" Foreground="#4B5563" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                <!-- Target toggle: controls whether this terminal receives broadcasts -->
+                <ToggleButton Grid.Column="3" Width="72" Height="28" Margin="0,0,8,0"
+                              IsChecked="{Binding IsTargeted}"
+                              FontSize="11" CornerRadius="6"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                              ToolTip.Tip="Toggle to include/exclude from broadcasts">
+                  <ToggleButton.Styles>
+                    <Style Selector="ToggleButton:checked">
+                      <Setter Property="Background" Value="#2563EB"/>
+                      <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                    <Style Selector="ToggleButton:not(:checked)">
+                      <Setter Property="Background" Value="#1F2937"/>
+                      <Setter Property="Foreground" Value="#6B7280"/>
+                    </Style>
+                  </ToggleButton.Styles>
+                  <TextBlock HorizontalAlignment="Center">
+                    <TextBlock.Text>
+                      <Binding Path="IsTargeted">
+                        <Binding.Converter>
+                          <conv:BoolToStringConverter TrueValue="Target ✓" FalseValue="Ignore"/>
+                        </Binding.Converter>
+                      </Binding>
+                    </TextBlock.Text>
+                  </TextBlock>
+                </ToggleButton>
+                <Button Grid.Column="4" Classes="ghost" Width="80" Height="30"
+                        FontSize="12" Padding="0"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Content="{Binding ConnectLabel}"
+                        Command="{Binding $parent[Window].DataContext.ToggleTerminalCommand}"
+                        CommandParameter="{Binding}"/>
+                <Button Grid.Column="5" Width="64" Height="30" Padding="0"
+                        FontSize="12" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        CornerRadius="6"
+                        Command="{Binding $parent[Window].DataContext.SelectTerminalCommand}"
+                        CommandParameter="{Binding}"
+                        Classes.selected="{Binding IsSelected}">
+                  <Button.Styles>
+                    <Style Selector="Button">
+                      <Setter Property="Background" Value="#1F2937"/>
+                      <Setter Property="Foreground" Value="#6B7280"/>
+                    </Style>
+                    <Style Selector="Button.selected">
+                      <Setter Property="Background" Value="#1D4ED8"/>
+                      <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                  </Button.Styles>
+                  <Button.Content>
+                    <TextBlock HorizontalAlignment="Center">
+                      <TextBlock.Text>
+                        <Binding Path="IsSelected">
+                          <Binding.Converter>
+                            <conv:BoolToStringConverter TrueValue="● Select" FalseValue="Select"/>
+                          </Binding.Converter>
+                        </Binding>
+                      </TextBlock.Text>
+                    </TextBlock>
+                  </Button.Content>
+                </Button>
+                <Button Grid.Column="6" Width="30" Height="30" Padding="0" Margin="6,0,0,0"
+                        FontSize="14" CornerRadius="6"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding $parent[Window].DataContext.TogglePowerCommand}"
+                        CommandParameter="{Binding}"
+                        Classes.on="{Binding IsConnected}">
+                  <Button.Styles>
+                    <Style Selector="Button">
+                      <Setter Property="Background" Value="#7F1D1D"/>
+                      <Setter Property="Foreground" Value="#FCA5A5"/>
+                    </Style>
+                    <Style Selector="Button.on">
+                      <Setter Property="Background" Value="#166534"/>
+                      <Setter Property="Foreground" Value="#86EFAC"/>
+                    </Style>
+                  </Button.Styles>
+                  <TextBlock Text="⏻" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+
+    <!-- ── Controls ──────────────────────────────────────────────────────────── -->
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel Spacing="0">
+
+        <!-- Barcode Scanner -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Text="🔍  BARCODE SCANNER" FontSize="12" FontWeight="SemiBold"
+                       Foreground="#60A5FA" LetterSpacing="1"/>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Grid.Column="0" Text="{Binding BarcodeInput}" Watermark="Enter barcode…"
+                       Background="#0D1117" Foreground="White" CornerRadius="6" Padding="10,8"
+                       BorderBrush="#30363D" FontSize="13" Margin="0,0,8,0"/>
+              <Button Grid.Column="1" Classes="primary" Content="Scan ↵"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      Command="{Binding SendScanCommand}"/>
+            </Grid>
+            <TextBlock Classes="label" Text="QUICK PRESETS"/>
+            <WrapPanel Orientation="Horizontal">
+              <Button Classes="ghost" Content="Apple"       Margin="0,0,6,6" Click="OnPresetClick" Tag="1234567890"/>
+              <Button Classes="ghost" Content="Book"        Margin="0,0,6,6" Click="OnPresetClick" Tag="9780201379624"/>
+              <Button Classes="ghost" Content="Chocolate"   Margin="0,0,6,6" Click="OnPresetClick" Tag="5901234123457"/>
+              <Button Classes="ghost" Content="Pepsi"       Margin="0,0,6,6" Click="OnPresetClick" Tag="0012000001086"/>
+              <Button Classes="danger" Content="❌ Unknown" Margin="0,0,6,6" Command="{Binding SendUnknownBarcodeCommand}"/>
+            </WrapPanel>
+            <Button Classes="ghost" Content="🎲 3 Random Scans"
+                    Command="{Binding SendRandomScansCommand}" HorizontalAlignment="Left"/>
+
+            <!-- Wrong weight toggle -->
+            <Border Background="#1C1208" CornerRadius="8" Padding="12,10" Margin="0,4,0,0">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <ToggleSwitch IsChecked="{Binding SimulateWrongWeight}"
+                              OnContent="Wrong Weight: ON" OffContent="Wrong Weight: OFF"
+                              Foreground="#FCA5A5" MinWidth="0"/>
+                <TextBlock FontSize="11" Foreground="#6B7280" VerticalAlignment="Center"
+                           Text="Sends gray-zone weight (~73% of expected) → logged as fail"/>
+              </StackPanel>
+            </Border>
+
+            <!-- Not placed toggle -->
+            <Border Background="#0D1A0D" CornerRadius="8" Padding="12,10" Margin="0,4,0,0">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <ToggleSwitch IsChecked="{Binding SimulateNotPlaced}"
+                              OnContent="Not Placed: ON" OffContent="Not Placed: OFF"
+                              Foreground="#86EFAC" MinWidth="0"/>
+                <TextBlock FontSize="11" Foreground="#6B7280" VerticalAlignment="Center"
+                           Text="Sends 0 g → customer ignored the bagging area"/>
+              </StackPanel>
+            </Border>
+
+            <!-- Items-on-scale stepper (for cumulative weight on + / − debounce checks) -->
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*" Margin="0,6,0,4">
+              <TextBlock Grid.Column="0" Text="Items on scale:" FontSize="12"
+                         Foreground="#9CA3AF" VerticalAlignment="Center" Margin="0,0,10,0"/>
+              <Button Grid.Column="1" Classes="ghost" Content="−" Width="28" Height="28" Padding="0"
+                      FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      Command="{Binding DecreaseScaleItemCountCommand}"/>
+              <TextBlock Grid.Column="2" Text="{Binding ScaleItemCount}" FontSize="13" FontWeight="Bold"
+                         Foreground="White" Width="28" TextAlignment="Center" VerticalAlignment="Center"/>
+              <Button Grid.Column="3" Classes="ghost" Content="+" Width="28" Height="28" Padding="0"
+                      FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      Command="{Binding IncreaseScaleItemCountCommand}" HorizontalAlignment="Left"/>
+            </Grid>
+            <!-- Place item button — disabled after clicking, re-enabled when scale check is pending -->
+            <Grid ColumnDefinitions="*,Auto">
+              <Button Grid.Column="0" Classes="success" Content="✓ Place Item on Scale"
+                      Command="{Binding PlaceItemCommand}"
+                      IsEnabled="{Binding PlaceItemReady}"
+                      HorizontalAlignment="Stretch" Margin="0,0,6,0"
+                      HorizontalContentAlignment="Center"/>
+              <Button Grid.Column="1" Classes="ghost" Content="↺" Width="36" Height="36"
+                      FontSize="16" Padding="0"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      Command="{Binding ReadyPlaceItemCommand}"
+                      ToolTip.Tip="Re-enable Place Item (use before a + debounce check)"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- Hardware Status -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Text="🔧  STATUS" FontSize="12" FontWeight="SemiBold"
+                       Foreground="#A78BFA" LetterSpacing="1"/>
+            <Grid ColumnDefinitions="*,*,*,*">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Classes="label" Text="SCANNER"/>
+                <ToggleSwitch IsChecked="{Binding ScannerOk}" OnContent="OK" OffContent="Error" Foreground="White" MinWidth="60"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="4">
+                <TextBlock Classes="label" Text="PRINTER"/>
+                <ToggleSwitch IsChecked="{Binding PrinterOk}" OnContent="OK" OffContent="Error" Foreground="White" MinWidth="60"/>
+              </StackPanel>
+              <StackPanel Grid.Column="2" Spacing="4">
+                <TextBlock Classes="label" Text="CARD READER"/>
+                <ToggleSwitch IsChecked="{Binding CardReaderOk}" OnContent="OK" OffContent="Error" Foreground="White" MinWidth="60"/>
+              </StackPanel>
+              <StackPanel Grid.Column="3" Spacing="4">
+                <TextBlock Classes="label" Text="SCALE"/>
+                <ToggleSwitch IsChecked="{Binding ScaleOk}" OnContent="OK" OffContent="Error" Foreground="White" MinWidth="60"/>
+              </StackPanel>
+            </Grid>
+            <WrapPanel Orientation="Horizontal">
+              <Button Classes="danger"  Content="💥 Disconnect All"  Margin="0,0,8,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding DisconnectAllHardwareCommand}"/>
+              <Button Classes="success" Content="✓ Reconnect All"   Margin="0,0,8,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding ReconnectAllHardwareCommand}"/>
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- Payment -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Text="💳  PAYMENT TERMINAL" FontSize="12" FontWeight="SemiBold"
+                       Foreground="#34D399" LetterSpacing="1"/>
+            <TextBlock FontSize="11" Foreground="#6B7280"
+                       Text="Terminal must be on the payment waiting screen (after customer chooses Card or Mobile Pay)."/>
+
+            <!-- Card / Mobile Pay -->
+            <Border Background="#0D2818" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <TextBlock Text="CARD / MOBILE PAY" FontSize="11" FontWeight="SemiBold"
+                           Foreground="#34D399"/>
+                <TextBlock FontSize="11" Foreground="#6B7280"
+                           Text="Click Approve or Decline when terminal shows the card/phone waiting animation."/>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Classes="success" Content="✓ Approve Payment"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding ApprovePaymentCommand}"/>
+                  <Button Classes="danger"  Content="✗ Decline Payment"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding DeclinePaymentCommand}"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Cash denominations -->
+            <Border Background="#0D1F12" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                  <TextBlock Text="CASH — INSERT BILLS &amp; COINS" FontSize="11" FontWeight="SemiBold" Foreground="#86EFAC" VerticalAlignment="Center"/>
+                  <Button Grid.Column="1" Classes="ghost" Content="↺ Reset" Padding="6,4" FontSize="11" Margin="0,0,6,0"
+                          Command="{Binding ResetToDefaultCommand}" ToolTip.Tip="Restore all counts to seed defaults"/>
+                  <Button Grid.Column="2" Classes="primary" Content="📋 Manage" Padding="8,4" FontSize="11"
+                          Command="{Binding OpenDrawerManagementCommand}" ToolTip.Tip="Edit denomination counts"/>
+                </Grid>
+
+                <TextBlock FontSize="11" Foreground="#6B7280"
+                           Text="Terminal must be on the cash waiting screen. Click to insert denomination."/>
+                <TextBlock Classes="label" Text="BILLS"/>
+                <ItemsControl ItemsSource="{Binding DrawerBills}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="m:CashSlot">
+                      <StackPanel Margin="0,0,6,6" Spacing="2" Width="58">
+                        <Button Classes="ghost" Content="{Binding Label}" Height="34"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Classes.full="{Binding IsAtMax}"
+                                Command="{Binding $parent[Window].DataContext.SendCashInsertCommand}"
+                                CommandParameter="{Binding}">
+                          <Button.Styles>
+                            <Style Selector="Button.full /template/ ContentPresenter">
+                              <Setter Property="Background" Value="#7F1D1D"/>
+                            </Style>
+                          </Button.Styles>
+                        </Button>
+                        <TextBlock Text="{Binding Count, StringFormat='×{0}'}"
+                                   FontSize="10" HorizontalAlignment="Center">
+                          <TextBlock.Foreground>
+                            <Binding Path="IsAtMax">
+                              <Binding.Converter>
+                                <conv:BoolToStringConverter TrueValue="#FCA5A5" FalseValue="#6B7280"/>
+                              </Binding.Converter>
+                            </Binding>
+                          </TextBlock.Foreground>
+                        </TextBlock>
+                      </StackPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Classes="label" Text="COINS"/>
+                <ItemsControl ItemsSource="{Binding DrawerCoins}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="m:CashSlot">
+                      <StackPanel Margin="0,0,6,6" Spacing="2" Width="62">
+                        <Button Classes="ghost" Content="{Binding Label}" Height="34"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Classes.full="{Binding IsAtMax}"
+                                Command="{Binding $parent[Window].DataContext.SendCashInsertCommand}"
+                                CommandParameter="{Binding}">
+                          <Button.Styles>
+                            <Style Selector="Button.full /template/ ContentPresenter">
+                              <Setter Property="Background" Value="#7F1D1D"/>
+                            </Style>
+                          </Button.Styles>
+                        </Button>
+                        <TextBlock Text="{Binding Count, StringFormat='×{0}'}"
+                                   FontSize="10" HorizontalAlignment="Center">
+                          <TextBlock.Foreground>
+                            <Binding Path="IsAtMax">
+                              <Binding.Converter>
+                                <conv:BoolToStringConverter TrueValue="#FCA5A5" FalseValue="#6B7280"/>
+                              </Binding.Converter>
+                            </Binding>
+                          </TextBlock.Foreground>
+                        </TextBlock>
+                      </StackPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+          </StackPanel>
+        </Border>
+
+        <!-- Network & Server -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Text="🌐  NETWORK &amp; SERVER" FontSize="12" FontWeight="SemiBold" Foreground="#FB923C" LetterSpacing="1"/>
+            <WrapPanel Orientation="Horizontal">
+              <Button Classes="danger"  Content="📡 Server Down"   Margin="0,0,8,8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SimulateNetworkDownCommand}"/>
+              <Button Classes="success" Content="📡 Server Up"     Margin="0,0,8,8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SimulateNetworkUpCommand}"/>
+              <Button Classes="ghost"   Content="🐢 Slow (3s)"     Margin="0,0,8,8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SimulateSlowNetworkCommand}"/>
+              <Button Classes="ghost"   Content="↺ Reset lag"      Margin="0,0,8,8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding ResetNetworkLatencyCommand}"/>
+              <Button Classes="ghost"   Content="⏩ Skip 5 min"    Margin="0,0,8,8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SimulateTimeSkipCommand}"/>
+            </WrapPanel>
+            <TextBlock Classes="label" Text="REAL-TIME EVENTS"/>
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBox Grid.Column="0" Text="{Binding PriceChangeBarcode}" Watermark="Barcode"
+                       Background="#0D1117" Foreground="White" CornerRadius="6" Padding="8,6"
+                       BorderBrush="#30363D" FontSize="12" Margin="0,0,6,0"/>
+              <TextBox Grid.Column="1" Text="{Binding PriceChangeValue}" Watermark="New price"
+                       Background="#0D1117" Foreground="White" CornerRadius="6" Padding="8,6"
+                       BorderBrush="#30363D" FontSize="12" Width="90" Margin="0,0,6,0"/>
+              <Button Grid.Column="2" Classes="ghost" Content="📢 Price Change"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      Command="{Binding SimulatePriceChangeCommand}"/>
+            </Grid>
+            <Button Classes="ghost" Content="🗂 Catalog Update" HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding SimulateCatalogUpdateCommand}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Loyalty Card -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Text="🎁  LOYALTY CARD  —  INSERT CARD SCENARIOS" FontSize="12" FontWeight="SemiBold"
+                       Foreground="#F472B6" LetterSpacing="1"/>
+            <TextBlock FontSize="11" Foreground="#6B7280"
+                       Text="Terminal must be on the loyalty waiting screen. Each button simulates a card being inserted."/>
+
+            <!-- Scenario 1: Valid — rewards available -->
+            <Border Background="#0D2818" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="✅" FontSize="13"/>
+                  <TextBlock Text="INSERT VALID CARD — REWARDS AVAILABLE" FontSize="11" FontWeight="SemiBold"
+                             Foreground="#34D399"/>
+                  <TextBlock Text="(Gold / Silver tier — discount + point redemption unlocked)"
+                             FontSize="10" Foreground="#4B5563" VerticalAlignment="Center"/>
+                </StackPanel>
+                <WrapPanel Orientation="Horizontal">
+                  <Button Classes="ghost" Content="4910000000001  (Kim Ji-woo)" Margin="0,0,6,6"
+                          FontSize="11" Click="OnLoyaltyPresetClick" Tag="4910000000001"/>
+                  <Button Classes="ghost" Content="4910000000002  (Lee Min-jun)" Margin="0,0,6,6"
+                          FontSize="11" Click="OnLoyaltyPresetClick" Tag="4910000000002"/>
+                </WrapPanel>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBox Grid.Column="0" Text="{Binding LoyaltyCardInput}" Watermark="13-digit card number only…"
+                           Background="#0D1117" Foreground="White" CornerRadius="6" Padding="10,8"
+                           BorderBrush="#30363D" FontSize="13" Margin="0,0,8,0"/>
+                  <Button Grid.Column="1" Classes="primary" Content="⬆ Insert Card"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding SendLoyaltyScanCommand}"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <!-- Scenario: Phone number lookup -->
+            <Border Background="#0D1A2B" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="📱" FontSize="13"/>
+                  <TextBlock Text="PHONE NUMBER LOOKUP" FontSize="11" FontWeight="SemiBold"
+                             Foreground="#60A5FA"/>
+                </StackPanel>
+                <TextBlock FontSize="11" Foreground="#6B7280"
+                           Text="Simulates a customer entering their phone number on the loyalty screen."/>
+                <TextBlock Classes="label" Text="PRESETS"/>
+                <WrapPanel Orientation="Horizontal">
+                  <Button Classes="ghost" Content="★ Kim Ji-woo  01012345678"  Margin="0,0,6,6"
+                          FontSize="11" Click="OnPhonePresetClick" Tag="01012345678"/>
+                  <Button Classes="ghost" Content="★ Park Soo-yeon  01987654321" Margin="0,0,6,6"
+                          FontSize="11" Click="OnPhonePresetClick" Tag="01987654321"/>
+                  <Button Classes="ghost" Content="◈ Lee Min-jun  01198765432" Margin="0,0,6,6"
+                          FontSize="11" Click="OnPhonePresetClick" Tag="01198765432"/>
+                  <Button Classes="ghost" Content="◇ Choi Dong-hyun  01099998888" Margin="0,0,6,6"
+                          FontSize="11" Click="OnPhonePresetClick" Tag="01099998888"/>
+                </WrapPanel>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBox Grid.Column="0" Text="{Binding PhoneInput}" Watermark="Phone number  e.g. 01012345678"
+                           Background="#0D1117" Foreground="White" CornerRadius="6" Padding="10,8"
+                           BorderBrush="#30363D" FontSize="13" Margin="0,0,8,0"/>
+                  <Button Grid.Column="1" Classes="primary" Content="📱 Send"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding SendPhoneLookupCommand}"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <!-- Scenario 2: Valid — deposit/rewards limited (Bronze) -->
+            <Border Background="#1C1408" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="🔒" FontSize="13"/>
+                  <TextBlock Text="INSERT VALID CARD — DEPOSIT LIMITED" FontSize="11" FontWeight="SemiBold"
+                             Foreground="#FBBF24"/>
+                  <TextBlock Text="(Bronze tier — member found, no rewards yet)"
+                             FontSize="10" Foreground="#4B5563" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock FontSize="11" Foreground="#6B7280"
+                           Text="Card is registered. Member popup appears but no redemption — needs 1,000 pts to unlock rewards."/>
+                <WrapPanel Orientation="Horizontal">
+                  <Button Classes="ghost" Content="4910000000004  (Choi Dong-hyun  ◇ Bronze  420pts)"
+                          Margin="0,0,6,6" FontSize="11"
+                          Click="OnLoyaltyPresetClick" Tag="4910000000004"/>
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Scenario 3: Unknown card — not in system -->
+            <Border Background="#1C1208" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="❓" FontSize="13"/>
+                  <TextBlock Text="INSERT WRONG CARD — NOT REGISTERED" FontSize="11" FontWeight="SemiBold"
+                             Foreground="#FB923C"/>
+                </StackPanel>
+                <TextBlock FontSize="11" Foreground="#6B7280"
+                           Text="Card ID not found in the system → terminal shows 'Card not registered' popup"/>
+                <Button Classes="ghost" Content="⬆ Insert Unknown Card"
+                        HorizontalAlignment="Left" HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding SendUnknownLoyaltyCardCommand}"/>
+              </StackPanel>
+            </Border>
+
+            <!-- Scenario 4: Staff card override -->
+            <Border Background="#0D1A2B" BorderBrush="#1E3A5F" BorderThickness="1" CornerRadius="8" Padding="12,10">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="👮" FontSize="13"/>
+                  <TextBlock Text="STAFF CARD — OVERRIDE / UNLOCK" FontSize="11" FontWeight="SemiBold"
+                             Foreground="#60A5FA"/>
+                  <TextBlock Text="(settings unlock · insufficient cash dismiss · lockout reset)"
+                             FontSize="10" Foreground="#4B5563" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock FontSize="11" Foreground="#6B7280" TextWrapping="Wrap"
+                           Text="Tap a staff card to: (1) unlock Settings, (2) dismiss the Insufficient Cash alert, or (3) reset a PIN / pattern hard-lock."/>
+                <WrapPanel Orientation="Horizontal">
+                  <Button Classes="primary" Content="👮 STAFF-001  Manager"
+                          Margin="0,0,6,6" FontSize="11"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding SendStaffCardCommand}" CommandParameter="STAFF-001"/>
+                  <Button Classes="ghost" Content="👷 STAFF-002  Cashier"
+                          Margin="0,0,6,6" FontSize="11"
+                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding SendStaffCardCommand}" CommandParameter="STAFF-002"/>
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+
+
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- ── Drawer Management Popup ──────────────────────────────────────────── -->
+    <Border Grid.Row="0" Grid.RowSpan="3"
+            IsVisible="{Binding ShowDrawerManagement}"
+            Background="#CC000000" ZIndex="100">
+      <Border Background="#161B22" CornerRadius="12" Padding="24"
+              MaxWidth="440" MaxHeight="560"
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid RowDefinitions="Auto,*,Auto">
+
+          <!-- Header -->
+          <TextBlock Grid.Row="0" Text="💰  DRAWER MANAGEMENT" FontSize="14" FontWeight="Bold"
+                     Foreground="White" Margin="0,0,0,16"/>
+
+          <!-- Denomination rows -->
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="0">
+              <TextBlock Text="BILLS" FontSize="11" Foreground="#6B7280" Margin="0,0,0,8"/>
+              <ItemsControl ItemsSource="{Binding DrawerBills}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="m:CashSlot">
+                    <Grid ColumnDefinitions="60,Auto,80,Auto,*" Margin="0,0,0,8" VerticalAlignment="Center">
+                      <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="White"
+                                 FontSize="13" VerticalAlignment="Center"/>
+                      <Button Grid.Column="1" Content="−" Width="28" Height="28" Padding="0"
+                              FontSize="14" Classes="ghost" HorizontalContentAlignment="Center"
+                              Command="{Binding $parent[Window].DataContext.DecreaseEditCountCommand}"
+                              CommandParameter="{Binding}"/>
+                      <TextBox Grid.Column="2" Text="{Binding EditCountText, Mode=TwoWay}"
+                               FontSize="13" TextAlignment="Center"
+                               Background="#0D1117" Foreground="White"
+                               BorderBrush="#30363D" CornerRadius="6"
+                               Padding="4,0" Height="28" Margin="4,0"
+                               VerticalContentAlignment="Center"/>
+                      <Button Grid.Column="3" Content="+" Width="28" Height="28" Padding="0"
+                              FontSize="14" Classes="ghost" HorizontalContentAlignment="Center"
+                              Command="{Binding $parent[Window].DataContext.IncreaseEditCountCommand}"
+                              CommandParameter="{Binding}"/>
+                      <TextBlock Grid.Column="4" Text="{Binding DefaultCount, StringFormat='/ {0}'}"
+                                 FontSize="11" VerticalAlignment="Center" Margin="8,0,0,0">
+                        <TextBlock.Foreground>
+                          <Binding Path="IsAtMax">
+                            <Binding.Converter>
+                              <conv:BoolToStringConverter TrueValue="#FCA5A5" FalseValue="#4B5563"/>
+                            </Binding.Converter>
+                          </Binding>
+                        </TextBlock.Foreground>
+                      </TextBlock>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <TextBlock Text="COINS" FontSize="11" Foreground="#6B7280" Margin="0,12,0,8"/>
+              <ItemsControl ItemsSource="{Binding DrawerCoins}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="m:CashSlot">
+                    <Grid ColumnDefinitions="60,Auto,80,Auto,*" Margin="0,0,0,8" VerticalAlignment="Center">
+                      <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="White"
+                                 FontSize="13" VerticalAlignment="Center"/>
+                      <Button Grid.Column="1" Content="−" Width="28" Height="28" Padding="0"
+                              FontSize="14" Classes="ghost" HorizontalContentAlignment="Center"
+                              Command="{Binding $parent[Window].DataContext.DecreaseEditCountCommand}"
+                              CommandParameter="{Binding}"/>
+                      <TextBox Grid.Column="2" Text="{Binding EditCountText, Mode=TwoWay}"
+                               FontSize="13" TextAlignment="Center"
+                               Background="#0D1117" Foreground="White"
+                               BorderBrush="#30363D" CornerRadius="6"
+                               Padding="4,0" Height="28" Margin="4,0"
+                               VerticalContentAlignment="Center"/>
+                      <Button Grid.Column="3" Content="+" Width="28" Height="28" Padding="0"
+                              FontSize="14" Classes="ghost" HorizontalContentAlignment="Center"
+                              Command="{Binding $parent[Window].DataContext.IncreaseEditCountCommand}"
+                              CommandParameter="{Binding}"/>
+                      <TextBlock Grid.Column="4" Text="{Binding DefaultCount, StringFormat='/ {0}'}"
+                                 FontSize="11" VerticalAlignment="Center" Margin="8,0,0,0">
+                        <TextBlock.Foreground>
+                          <Binding Path="IsAtMax">
+                            <Binding.Converter>
+                              <conv:BoolToStringConverter TrueValue="#FCA5A5" FalseValue="#4B5563"/>
+                            </Binding.Converter>
+                          </Binding>
+                        </TextBlock.Foreground>
+                      </TextBlock>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+
+          <!-- Footer buttons -->
+          <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8"
+                      HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Classes="ghost" Content="✕ Cancel"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding CloseDrawerManagementCommand}"/>
+            <Button Classes="success" Content="✓ Save"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding SaveDrawerManagementCommand}"/>
+          </StackPanel>
+
+        </Grid>
+      </Border>
+    </Border>
+
+    <!-- Event log -->
+    <Border Grid.Row="2" Classes="card" Margin="0,10,0,0">
+      <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+          <TextBlock Text="EVENT LOG" FontSize="11" FontWeight="SemiBold" Foreground="#6B7280" LetterSpacing="1" VerticalAlignment="Center"/>
+          <Button Grid.Column="1" Classes="ghost" Content="Clear" Padding="8,4" FontSize="11" Command="{Binding ClearLogCommand}"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+          <TextBlock Text="{Binding Log}" FontFamily="Courier New, monospace" FontSize="11" Foreground="#9CA3AF" TextWrapping="Wrap"/>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+
+  </Grid>
+</Window>

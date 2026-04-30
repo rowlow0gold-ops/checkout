@@ -1,0 +1,64 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Terminal.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Styles>
+    <FluentTheme/>
+  </Application.Styles>
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+
+        <!-- ── Dark theme ──────────────────────────────────────────────── -->
+        <ResourceDictionary x:Key="Dark">
+          <!-- Surfaces -->
+          <SolidColorBrush x:Key="AppBg"        Color="#0A0A0F"/>
+          <SolidColorBrush x:Key="ScreenBg"     Color="#080810"/>
+          <SolidColorBrush x:Key="PanelBg"      Color="#111827"/>
+          <SolidColorBrush x:Key="CardBg"       Color="#161B22"/>
+          <SolidColorBrush x:Key="ItemBg"       Color="#1F2937"/>
+          <SolidColorBrush x:Key="InputBg"      Color="#0D1117"/>
+          <SolidColorBrush x:Key="ModalBg"      Color="#1E293B"/>
+          <!-- Borders -->
+          <SolidColorBrush x:Key="StrongBorder" Color="#30363D"/>
+          <SolidColorBrush x:Key="MidBorder"    Color="#374151"/>
+          <SolidColorBrush x:Key="SubtleBorder" Color="#1F2937"/>
+          <!-- Text -->
+          <SolidColorBrush x:Key="TextPrimary"  Color="White"/>
+          <SolidColorBrush x:Key="TextBright"   Color="#F9FAFB"/>
+          <SolidColorBrush x:Key="TextSub"      Color="#D1D5DB"/>
+          <SolidColorBrush x:Key="TextMuted"    Color="#9CA3AF"/>
+          <SolidColorBrush x:Key="TextFaint"    Color="#6B7280"/>
+          <SolidColorBrush x:Key="TextGhost"    Color="#4B5563"/>
+        </ResourceDictionary>
+
+        <!-- ── Light theme ─────────────────────────────────────────────── -->
+        <ResourceDictionary x:Key="Light">
+          <!-- Surfaces -->
+          <SolidColorBrush x:Key="AppBg"        Color="#F0F4F8"/>
+          <SolidColorBrush x:Key="ScreenBg"     Color="#E8EFF8"/>
+          <SolidColorBrush x:Key="PanelBg"      Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="CardBg"       Color="#F8FAFC"/>
+          <SolidColorBrush x:Key="ItemBg"       Color="#EEF2F7"/>
+          <SolidColorBrush x:Key="InputBg"      Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="ModalBg"      Color="#FFFFFF"/>
+          <!-- Borders -->
+          <SolidColorBrush x:Key="StrongBorder" Color="#CBD5E1"/>
+          <SolidColorBrush x:Key="MidBorder"    Color="#D1D9E6"/>
+          <SolidColorBrush x:Key="SubtleBorder" Color="#E2E8F0"/>
+          <!-- Text -->
+          <SolidColorBrush x:Key="TextPrimary"  Color="#0F172A"/>
+          <SolidColorBrush x:Key="TextBright"   Color="#1E293B"/>
+          <SolidColorBrush x:Key="TextSub"      Color="#334155"/>
+          <SolidColorBrush x:Key="TextMuted"    Color="#64748B"/>
+          <SolidColorBrush x:Key="TextFaint"    Color="#94A3B8"/>
+          <SolidColorBrush x:Key="TextGhost"    Color="#B0BAC8"/>
+        </ResourceDictionary>
+
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+
+</Application>

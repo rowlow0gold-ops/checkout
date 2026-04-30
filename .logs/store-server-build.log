@@ -1,0 +1,23 @@
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Microsoft.AspNetCore.WebSockets' 2.2.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Newtonsoft.Json' 11.0.2 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'System.Net.WebSockets.WebSocketProtocol' 4.5.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1904: Package 'System.Text.Encodings.Web' 4.5.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-ghhp-997w-qr28
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Microsoft.AspNetCore.WebSockets' 2.2.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Newtonsoft.Json' 11.0.2 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'System.Net.WebSockets.WebSocketProtocol' 4.5.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1904: Package 'System.Text.Encodings.Web' 4.5.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-ghhp-997w-qr28
+
+Build succeeded.
+
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Microsoft.AspNetCore.WebSockets' 2.2.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Newtonsoft.Json' 11.0.2 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'System.Net.WebSockets.WebSocketProtocol' 4.5.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1904: Package 'System.Text.Encodings.Web' 4.5.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-ghhp-997w-qr28
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Microsoft.AspNetCore.WebSockets' 2.2.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'Newtonsoft.Json' 11.0.2 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1903: Package 'System.Net.WebSockets.WebSocketProtocol' 4.5.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-6px8-22w5-w334
+/Users/jangminho/development/checkout/store-server/StoreServer/StoreServer.csproj : warning NU1904: Package 'System.Text.Encodings.Web' 4.5.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-ghhp-997w-qr28
+    8 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.93
