@@ -9,7 +9,9 @@ from app.routers.auth import get_current_user
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-import io, openpyxl
+import io, openpyxl, asyncio, logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -42,13 +44,14 @@ async def sync_transaction(body: TransactionIn, db: Session = Depends(get_db)):
         db.flush()
     terminal_id = terminal.id
 
+    from datetime import timezone as tz
     total = sum(i.unit_price * i.quantity for i in body.items)
     tx = Transaction(
         terminal_id=terminal_id,
         store_id=store_id,
         total_amount=total,
         payment_method=body.payment_method,
-        # always use cloud server time — ignore created_at from store client
+        created_at=datetime.now(tz.utc),
     )
     db.add(tx)
     db.flush()
@@ -64,12 +67,15 @@ async def sync_transaction(body: TransactionIn, db: Session = Depends(get_db)):
             subtotal=item.unit_price * item.quantity,
         ))
     db.commit()
-    await push_transaction_event({
-        "transaction_id": str(tx.id),
-        "store_id": str(body.store_id),
-        "total": str(total),
-        "method": body.payment_method,
-    })
+    try:
+        await push_transaction_event({
+            "transaction_id": str(tx.id),
+            "store_id": str(body.store_id),
+            "total": str(total),
+            "method": body.payment_method,
+        })
+    except Exception as e:
+        logger.warning("push_transaction_event failed (non-fatal): %s | type=%s", e, type(e).__name__)
     return {"transaction_id": tx.id}
 
 def _suspicion_score(tx: Transaction) -> int:

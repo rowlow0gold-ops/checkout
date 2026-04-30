@@ -13,6 +13,7 @@ builder.Services.AddDbContext<StoreDbContext>(opt =>
 builder.Services.AddHttpClient("cloud", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["CloudApiUrl"] ?? "https://checkout.minhojan-world.site/api/");
+    c.Timeout = TimeSpan.FromSeconds(8);
     var apiKey = builder.Configuration["CloudApiKey"];
     if (!string.IsNullOrEmpty(apiKey))
         c.DefaultRequestHeaders.Add("X-API-Key", apiKey);

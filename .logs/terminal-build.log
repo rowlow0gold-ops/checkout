@@ -2968,3 +2968,69 @@ Build succeeded.
     0 Error(s)
 
 Time Elapsed 00:00:01.36
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Models/CartItem.cs(31,18): warning CS8826: Partial method declarations 'void CartItem.OnUnitPriceChanged(decimal value)' and 'void CartItem.OnUnitPriceChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/Models/CartItem.cs(32,18): warning CS8826: Partial method declarations 'void CartItem.OnWeightStatusChanged(string value)' and 'void CartItem.OnWeightStatusChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(209,18): warning CS8826: Partial method declarations 'void MainViewModel.OnBonusPointsInputChanged(string value)' and 'void MainViewModel.OnBonusPointsInputChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(262,18): warning CS8826: Partial method declarations 'void MainViewModel.OnCurrentMemberChanged(LoyaltyMemberInfo? value)' and 'void MainViewModel.OnCurrentMemberChanged(LoyaltyMemberInfo? _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(268,18): warning CS8826: Partial method declarations 'void MainViewModel.OnPointsEarnedChanged(int value)' and 'void MainViewModel.OnPointsEarnedChanged(int _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(271,18): warning CS8826: Partial method declarations 'void MainViewModel.OnLoyaltyDiscountChanged(decimal value)' and 'void MainViewModel.OnLoyaltyDiscountChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(278,18): warning CS8826: Partial method declarations 'void MainViewModel.OnPaymentMethodChanged(string value)' and 'void MainViewModel.OnPaymentMethodChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(285,18): warning CS8826: Partial method declarations 'void MainViewModel.OnCashInsertedChanged(decimal value)' and 'void MainViewModel.OnCashInsertedChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(934,24): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(1277,24): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(106,41): warning MVVMTK0034: The field Terminal.ViewModels.MainViewModel._settingsPinInput is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead) (https://aka.ms/mvvmtoolkit/errors/mvvmtk0034) [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+
+Build succeeded.
+
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Models/CartItem.cs(31,18): warning CS8826: Partial method declarations 'void CartItem.OnUnitPriceChanged(decimal value)' and 'void CartItem.OnUnitPriceChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/Models/CartItem.cs(32,18): warning CS8826: Partial method declarations 'void CartItem.OnWeightStatusChanged(string value)' and 'void CartItem.OnWeightStatusChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(209,18): warning CS8826: Partial method declarations 'void MainViewModel.OnBonusPointsInputChanged(string value)' and 'void MainViewModel.OnBonusPointsInputChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(262,18): warning CS8826: Partial method declarations 'void MainViewModel.OnCurrentMemberChanged(LoyaltyMemberInfo? value)' and 'void MainViewModel.OnCurrentMemberChanged(LoyaltyMemberInfo? _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(268,18): warning CS8826: Partial method declarations 'void MainViewModel.OnPointsEarnedChanged(int value)' and 'void MainViewModel.OnPointsEarnedChanged(int _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(271,18): warning CS8826: Partial method declarations 'void MainViewModel.OnLoyaltyDiscountChanged(decimal value)' and 'void MainViewModel.OnLoyaltyDiscountChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(278,18): warning CS8826: Partial method declarations 'void MainViewModel.OnPaymentMethodChanged(string value)' and 'void MainViewModel.OnPaymentMethodChanged(string _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(285,18): warning CS8826: Partial method declarations 'void MainViewModel.OnCashInsertedChanged(decimal value)' and 'void MainViewModel.OnCashInsertedChanged(decimal _)' have signature differences. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(934,24): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(1277,24): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+/Users/jangminho/development/checkout/terminal/Terminal/ViewModels/MainViewModel.cs(106,41): warning MVVMTK0034: The field Terminal.ViewModels.MainViewModel._settingsPinInput is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead) (https://aka.ms/mvvmtoolkit/errors/mvvmtk0034) [/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj]
+    13 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.23
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+
+Build succeeded.
+
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.67
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+
+Build succeeded.
+
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.01
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+
+Build succeeded.
+
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+/Users/jangminho/development/checkout/terminal/Terminal/Terminal.csproj : warning NU1903: Package 'Tmds.DBus.Protocol' 0.20.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-xrw6-gwf8-vvr9
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.84
