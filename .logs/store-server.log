@@ -1254,3 +1254,74 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
       FROM "CashDrawer" AS "c"
       WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "t"."Id", "t"."CreatedAt", "t"."PaymentMethod", "t"."Status", "t"."TerminalId", "t"."TotalAmount", "s"."Id", "s"."ProductId", "s"."Quantity", "s"."Subtotal", "s"."TransactionId", "s"."UnitPrice", "s"."Id0", "s"."Barcode", "s"."Category", "s"."Name", "s"."Price", "s"."UpdatedAt", "s"."WeightGrams"
+      FROM "Transactions" AS "t"
+      LEFT JOIN (
+          SELECT "i"."Id", "i"."ProductId", "i"."Quantity", "i"."Subtotal", "i"."TransactionId", "i"."UnitPrice", "p"."Id" AS "Id0", "p"."Barcode", "p"."Category", "p"."Name", "p"."Price", "p"."UpdatedAt", "p"."WeightGrams"
+          FROM "Items" AS "i"
+          INNER JOIN "Products" AS "p" ON "i"."ProductId" = "p"."Id"
+      ) AS "s" ON "t"."Id" = "s"."TransactionId"
+      WHERE "t"."Status" IN ('pending', 'failed')
+      ORDER BY "t"."Id", "s"."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__terminalId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT "c"."Id", "c"."Count", "c"."Denomination", "c"."IsCoin", "c"."Key", "c"."Label", "c"."MaxCount", "c"."TerminalId"
+      FROM "CashDrawer" AS "c"
+      WHERE "c"."TerminalId" = @__terminalId_0
