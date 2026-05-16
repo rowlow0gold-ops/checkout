@@ -1,6 +1,6 @@
 """
 Run from web/backend:  python seed_data.py
-Seeds 3 stores, terminals, 8 products, and daily transactions Jan 1 2026 → today.
+Seeds 3 stores, terminals, 4 products, and daily transactions Jan 1 2026 → today.
 """
 import random
 from datetime import date, datetime, timedelta
@@ -40,11 +40,7 @@ with Session(engine) as db:
         ('1234567890',    'Apple',               1.99,  'Produce'),
         ('9780201379624', 'Programming Book',    39.99, 'Books'),
         ('5901234123457', 'Dark Chocolate',       3.49, 'Snacks'),
-        ('4006381333931', 'Staedtler Pen',        2.99, 'Stationery'),
         ('0012000001086', 'Pepsi 500ml',          1.79, 'Drinks'),
-        ('5000112546415', 'Cadbury Dairy Milk',   2.49, 'Snacks'),
-        ('8801062573158', 'Shin Ramyun',          1.29, 'Instant Food'),
-        ('0038000845031', 'Kelloggs Corn Flakes', 4.99, 'Breakfast'),
     ]
     products = []
     for barcode, name, price, cat in products_data:
