@@ -68,11 +68,7 @@ using (var scope = app.Services.CreateScope())
             new Product { Barcode = "1234567890",    Name = "Apple",                  Price = 1.99m,  Category = "Produce",      WeightGrams = 182 },
             new Product { Barcode = "9780201379624", Name = "Programming Book",       Price = 39.99m, Category = "Books",        WeightGrams = 450 },
             new Product { Barcode = "5901234123457", Name = "Dark Chocolate",         Price = 3.49m,  Category = "Snacks",       WeightGrams = 100 },
-            new Product { Barcode = "4006381333931", Name = "Staedtler Pen",          Price = 2.99m,  Category = "Stationery",   WeightGrams = 0   },
-            new Product { Barcode = "0012000001086", Name = "Pepsi 500ml",            Price = 1.79m,  Category = "Drinks",       WeightGrams = 528 },
-            new Product { Barcode = "5000112546415", Name = "Cadbury Dairy Milk",     Price = 2.49m,  Category = "Snacks",       WeightGrams = 200 },
-            new Product { Barcode = "8801062573158", Name = "Shin Ramyun",            Price = 1.29m,  Category = "Instant Food", WeightGrams = 120 },
-            new Product { Barcode = "0038000845031", Name = "Kellogg's Corn Flakes",  Price = 4.99m,  Category = "Breakfast",    WeightGrams = 500 }
+            new Product { Barcode = "0012000001086", Name = "Pepsi 500ml",            Price = 1.79m,  Category = "Drinks",       WeightGrams = 528 }
         );
         db.SaveChanges();
     }
