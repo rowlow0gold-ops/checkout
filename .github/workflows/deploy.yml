@@ -4,81 +4,32 @@ on:
   push:
     branches: [main]
     paths:
-      - 'web/**'
-      - 'docker-compose.yml'
+      - "web/**"
+      - "docker-compose.yml"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
 
 jobs:
-  deploy-backend:
-    name: Build & Deploy Backend
-    runs-on: ubuntu-latest
+  deploy:
+    name: Build & Deploy (home server)
+    runs-on: [self-hosted, home]
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build & push backend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./web/backend
-          push: true
-          tags: ghcr.io/${{ github.repository }}/checkout-backend:latest
-
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /opt/checkout
-            echo "DATABASE_URL=${{ secrets.DB_URL }}" > .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            echo "REDIS_URL=redis://redis:6379" >> .env
-            docker compose pull backend
-            docker compose up -d backend redis
-            docker system prune -f
-
-  deploy-frontend:
-    name: Build & Deploy Frontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Build React app
-        working-directory: ./web/frontend
+      - name: Sync source on home server
         run: |
-          npm ci
-          npm run build
-        env:
-          VITE_API_BASE: /api
+          cd /home/jj/apps/checkout
+          git fetch origin main
+          git reset --hard origin/main
 
-      - name: Deploy static files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "web/frontend/dist/*"
-          target: "/var/www/checkout/frontend"
-          strip_components: 3
+      - name: Rebuild & restart containers
+        run: |
+          cd /home/jj/apps/stack
+          docker compose --env-file .env build checkout-backend checkout-frontend
+          docker compose --env-file .env up -d --no-deps checkout-backend checkout-frontend
 
-      - name: Reload nginx
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: sudo systemctl reload nginx
+      - name: Flush Redis cache
+        run: docker exec redis7 redis-cli FLUSHALL
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl -fsS http://127.0.0.1:8082/api/health
