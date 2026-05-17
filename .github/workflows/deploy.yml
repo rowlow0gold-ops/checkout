@@ -5,31 +5,49 @@ on:
     branches: [main]
     paths:
       - "web/**"
-      - "docker-compose.yml"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
+env:
+  KUBECONFIG: /tmp/k3s.yaml
+
 jobs:
   deploy:
-    name: Build & Deploy (home server)
+    name: Build & Deploy to K3s
     runs-on: [self-hosted, home]
     steps:
-      - name: Sync source on home server
+      - name: Sync source
         run: |
           cd /home/jj/apps/checkout
           git fetch origin main
           git reset --hard origin/main
 
-      - name: Rebuild & restart containers
+      - name: Build backend image
         run: |
-          cd /home/jj/apps/stack
-          docker compose --env-file .env build checkout-backend checkout-frontend
-          docker compose --env-file .env up -d --no-deps checkout-backend checkout-frontend
+          cd /home/jj/apps/checkout/web/backend
+          docker build -t stack-checkout-backend:latest .
+
+      - name: Build frontend image
+        run: |
+          cd /home/jj/apps/checkout
+          docker build -t stack-checkout-frontend:latest -f /home/jj/apps/stack/checkout-frontend.Dockerfile .
+
+      - name: Import both into K3s containerd
+        run: |
+          docker save stack-checkout-backend:latest | /usr/local/bin/k3s ctr -n k8s.io images import -
+          docker save stack-checkout-frontend:latest | /usr/local/bin/k3s ctr -n k8s.io images import -
+
+      - name: Rollout restart both deployments
+        run: |
+          for d in checkout-backend checkout-frontend; do
+            /usr/local/bin/k3s kubectl --insecure-skip-tls-verify rollout restart deployment/$d -n apps
+            /usr/local/bin/k3s kubectl --insecure-skip-tls-verify rollout status deployment/$d -n apps --timeout=120s
+          done
 
       - name: Flush Redis cache
-        run: docker exec redis7 redis-cli FLUSHALL
+        run: /usr/local/bin/k3s kubectl --insecure-skip-tls-verify exec -n data redis-0 -- redis-cli FLUSHALL
 
       - name: Health check
         run: |
           sleep 5
-          curl -fsS http://checkout-frontend/api/health
+          curl -fsS http://checkout-frontend.apps.svc.cluster.local/api/health
