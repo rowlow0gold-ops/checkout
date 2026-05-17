@@ -50,4 +50,4 @@ jobs:
       - name: Health check
         run: |
           sleep 5
-          curl -fsS http://checkout-frontend.apps.svc.cluster.local/api/health
+          curl -fsS https://checkout.minhojan-world.site/api/health
