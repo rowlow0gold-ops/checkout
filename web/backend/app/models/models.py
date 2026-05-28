@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, DateTime, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
@@ -64,3 +64,17 @@ class User(Base):
     # Account lockout state
     failed_attempts = Column(Integer, nullable=False, server_default="0", default=0)
     locked_until    = Column(DateTime(timezone=True), nullable=True)
+
+
+
+class RefreshToken(Base):
+    """Stores the SHA-256 hash of issued refresh tokens. Raw tokens never persisted.
+    On /auth/refresh we verify, mark revoked (single-use), and issue a new pair.
+    """
+    __tablename__ = "refresh_tokens"
+    id         = Column(Integer, primary_key=True)
+    token_hash = Column(String(64), unique=True, nullable=False, index=True)
+    user_id    = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    revoked    = Column(Boolean, nullable=False, default=False, server_default="false")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

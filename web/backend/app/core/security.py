@@ -16,3 +16,15 @@ def create_access_token(data: dict) -> str:
 
 def decode_token(token: str) -> dict:
     return jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+
+
+# ---------- Refresh tokens (opaque, rotated, single-use) ----------
+import hashlib
+import secrets
+
+def generate_refresh_token() -> str:
+    """48 random bytes → 64-char URL-safe string. Caller persists the *hash*."""
+    return secrets.token_urlsafe(48)
+
+def hash_refresh_token(raw: str) -> str:
+    return hashlib.sha256(raw.encode()).hexdigest()
