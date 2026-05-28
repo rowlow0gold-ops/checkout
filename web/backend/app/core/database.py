@@ -12,3 +12,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def ensure_lockout_columns():
+    """Idempotently add account-lockout columns to the existing users table.
+    create_all() doesn't ALTER existing tables; in a real project you'd use
+    Alembic. This is a small one-shot migration helper."""
+    from sqlalchemy import text
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_attempts INTEGER NOT NULL DEFAULT 0"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until TIMESTAMP WITH TIME ZONE NULL"))

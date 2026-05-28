@@ -1,10 +1,11 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.database import engine, Base
+from app.core.database import engine, Base, ensure_lockout_columns
 from app.routers import auth, stores, products, transactions, dashboard, events
 
 Base.metadata.create_all(bind=engine)
+ensure_lockout_columns()
 
 app = FastAPI(title="Checkout Management API", version="1.0.0")
 

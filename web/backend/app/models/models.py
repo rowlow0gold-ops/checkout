@@ -61,3 +61,6 @@ class User(Base):
     role          = Column(String(20), default="admin")  # super_admin | admin
     store_id      = Column(Integer, ForeignKey("stores.id"), nullable=True)
     created_at    = Column(DateTime(timezone=True), server_default=func.now())
+    # Account lockout state
+    failed_attempts = Column(Integer, nullable=False, server_default="0", default=0)
+    locked_until    = Column(DateTime(timezone=True), nullable=True)
