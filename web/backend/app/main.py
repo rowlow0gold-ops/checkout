@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
@@ -7,11 +8,22 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Checkout Management API", version="1.0.0")
 
+# CORS: explicit allowlist. `*` is forbidden when allow_credentials=True
+# (browsers reject the combination), and would let any site make
+# credentialed cross-origin requests against this API.
+_default_origins = [
+    "https://checkout.minhojan-world.site",
+    "http://localhost:5173",   # vite dev
+    "http://localhost:3000",   # alt dev port
+]
+_env_origins = [o.strip() for o in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",") if o.strip()]
+ALLOWED_ORIGINS = _env_origins or _default_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
