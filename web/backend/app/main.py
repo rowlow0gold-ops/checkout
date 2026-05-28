@@ -8,12 +8,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Checkout Management API", version="1.0.0")
 
-# Rate limiting (per remote address). Login endpoint applies a stricter
-# limit via decorator. Default limit catches general abuse / scraping.
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+# Rate limiting wired up at app level (limiter instance lives in app.core
+# to avoid circular imports with routers that decorate endpoints).
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-limiter = Limiter(key_func=get_remote_address, default_limits=["120/minute"])
+from app.core.rate_limit import limiter
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
