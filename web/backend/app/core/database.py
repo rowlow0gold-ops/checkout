@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.core.config import settings
 
@@ -14,23 +14,40 @@ def get_db():
         db.close()
 
 
-def ensure_lockout_columns():
-    """Idempotently add account-lockout columns to the existing users table.
-    create_all() doesn't ALTER existing tables; in a real project you'd use
-    Alembic. This is a small one-shot migration helper."""
-    from sqlalchemy import text
-    with engine.begin() as conn:
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_attempts INTEGER NOT NULL DEFAULT 0"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until TIMESTAMP WITH TIME ZONE NULL"))
+# ---------------- Idempotent migrations ----------------
+# These run on every startup. They MUST be safe to call when the app's DB
+# user lacks DDL privileges — in that case we just verify the schema is
+# already what we need.
 
+def _column_exists(conn, table: str, column: str) -> bool:
+    row = conn.execute(text(
+        "SELECT 1 FROM information_schema.columns "
+        "WHERE table_name = :t AND column_name = :c"
+    ), {"t": table, "c": column}).first()
+    return row is not None
+
+def _table_exists(conn, table: str) -> bool:
+    row = conn.execute(text(
+        "SELECT 1 FROM information_schema.tables WHERE table_name = :t"
+    ), {"t": table}).first()
+    return row is not None
+
+def ensure_lockout_columns():
+    """Add failed_attempts + locked_until to users if missing. No-op (and zero
+    permission requirement) when both columns already exist."""
+    with engine.begin() as conn:
+        if not _column_exists(conn, "users", "failed_attempts"):
+            conn.execute(text("ALTER TABLE users ADD COLUMN failed_attempts INTEGER NOT NULL DEFAULT 0"))
+        if not _column_exists(conn, "users", "locked_until"):
+            conn.execute(text("ALTER TABLE users ADD COLUMN locked_until TIMESTAMP WITH TIME ZONE NULL"))
 
 def ensure_refresh_token_table():
-    """Idempotently create refresh_tokens table (create_all() should handle this
-    but be defensive for existing deployments)."""
-    from sqlalchemy import text
+    """Create refresh_tokens if missing. No-op when it already exists."""
     with engine.begin() as conn:
+        if _table_exists(conn, "refresh_tokens"):
+            return
         conn.execute(text("""
-            CREATE TABLE IF NOT EXISTS refresh_tokens (
+            CREATE TABLE refresh_tokens (
                 id          SERIAL PRIMARY KEY,
                 token_hash  VARCHAR(64) NOT NULL UNIQUE,
                 user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
