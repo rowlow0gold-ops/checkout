@@ -95,8 +95,19 @@ def require_super_admin(current_user: User = Depends(get_current_user)) -> User:
 @router.post("/refresh", response_model=TokenPair)
 def refresh(body: RefreshIn, db: Session = Depends(get_db)):
     rt = db.query(RefreshToken).filter(RefreshToken.token_hash == hash_refresh_token(body.refresh_token)).first()
-    if not rt or rt.revoked or rt.expires_at < datetime.now(timezone.utc):
+    if not rt:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    # REUSE DETECTION: a revoked token coming back almost certainly means
+    # it was stolen and replayed. Revoke every active token for this user.
+    if rt.revoked:
+        db.query(RefreshToken).filter(
+            RefreshToken.user_id == rt.user_id,
+            RefreshToken.revoked == False,
+        ).update({"revoked": True}, synchronize_session=False)
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token replay detected — all sessions revoked")
+    if rt.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token expired")
     # Rotation: revoke old, issue new
     rt.revoked = True
     db.commit()
