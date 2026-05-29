@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from app.core.database import get_db
 from app.core.config import settings
+from app.core import audit
 from app.core.security import verify_password, create_access_token, decode_token, generate_refresh_token, hash_refresh_token
 from app.models.models import User, RefreshToken
 from pydantic import BaseModel
@@ -47,12 +48,14 @@ LOCKOUT_DURATION = timedelta(minutes=15)
 def login(request: Request, form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == form.username).first()
     if not user:
+        audit.record("LOGIN_FAILURE", email=form.username, ip=request.client.host if request.client else None, success=False, details="unknown_user")
         # Same generic error so we don't leak which usernames exist
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     now = datetime.now(timezone.utc)
     if user.locked_until and user.locked_until > now:
         mins = int((user.locked_until - now).total_seconds() / 60) + 1
+        audit.record("LOGIN_LOCKED", email=user.username, ip=request.client.host if request.client else None, success=False, details=f"minutes_remaining={mins}")
         raise HTTPException(
             status_code=status.HTTP_423_LOCKED,
             detail=f"Account locked. Try again in {mins} minute(s)."
@@ -64,6 +67,7 @@ def login(request: Request, form: OAuth2PasswordRequestForm = Depends(), db: Ses
             user.locked_until = now + LOCKOUT_DURATION
             user.failed_attempts = 0
         db.commit()
+        audit.record("LOGIN_FAILURE", email=user.username, ip=request.client.host if request.client else None, success=False, details=f"attempts={user.failed_attempts}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     # Success — reset state
@@ -72,6 +76,7 @@ def login(request: Request, form: OAuth2PasswordRequestForm = Depends(), db: Ses
         user.locked_until = None
         db.commit()
 
+    audit.record("LOGIN_SUCCESS", email=user.username, ip=request.client.host if request.client else None, success=True)
     token = create_access_token({"sub": str(user.id), "username": user.username, "role": user.role, "store_id": user.store_id})
     refresh_raw = _issue_refresh(user.id, db)
     return {"access_token": token, "refresh_token": refresh_raw, "token_type": "bearer", "role": user.role, "store_id": user.store_id}

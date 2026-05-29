@@ -78,3 +78,16 @@ class RefreshToken(Base):
     expires_at = Column(DateTime(timezone=True), nullable=False)
     revoked    = Column(Boolean, nullable=False, default=False, server_default="false")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+
+class AuditEvent(Base):
+    """Append-only log of security-relevant events (login attempts)."""
+    __tablename__ = "audit_events"
+    id         = Column(Integer, primary_key=True)
+    email      = Column(String(200), index=True)
+    action     = Column(String(50), nullable=False)
+    ip         = Column(String(64))
+    success    = Column(Boolean, nullable=False, default=True, server_default="true")
+    details    = Column(String(500))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

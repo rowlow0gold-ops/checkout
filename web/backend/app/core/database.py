@@ -57,3 +57,24 @@ def ensure_refresh_token_table():
             )
         """))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_user_id ON refresh_tokens(user_id)"))
+
+
+def ensure_audit_event_table():
+    """Create audit_events if missing. No-op when it already exists (safe
+    for the least-priv app DB user — no DDL attempted in steady state)."""
+    with engine.begin() as conn:
+        if _table_exists(conn, "audit_events"):
+            return
+        conn.execute(text("""
+            CREATE TABLE audit_events (
+                id          SERIAL PRIMARY KEY,
+                email       VARCHAR(200),
+                action      VARCHAR(50) NOT NULL,
+                ip          VARCHAR(64),
+                success     BOOLEAN NOT NULL DEFAULT TRUE,
+                details     VARCHAR(500),
+                created_at  TIMESTAMP WITH TIME ZONE DEFAULT now()
+            )
+        """))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_audit_email ON audit_events(email)"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_audit_created_at ON audit_events(created_at)"))
