@@ -4,6 +4,8 @@ on:
 jobs:
   apply:
     runs-on: [self-hosted]
+    env:
+      KUBECONFIG: /tmp/k3s.yaml
     steps:
       - name: Apply kindergarten LLM speedups
         run: |
